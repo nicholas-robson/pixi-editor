@@ -1,0 +1,15 @@
+main {
+    display: flex;
+    flex-wrap: nowrap;
+    height: 100vh;
+    height: -webkit-fill-available;
+    max-height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+#tree-container {
+    background: #191d20;
+    border-radius: 5px;
+    padding: 10px 5px;
+}
