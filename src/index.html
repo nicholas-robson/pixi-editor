@@ -4,6 +4,7 @@
     <body>
         <main class="flex-row">
             <div
+                id="left-panel"
                 class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark shadow"
                 style="width: 280px; z-index: 500"
             >
@@ -27,11 +28,11 @@
                 <div id="tree-container"></div>
             </div>
 
-            <div class="flex-grow-1 bg-dark">
-                <canvas id="canvas-container" style="position: absolute"></canvas>
+            <div id="center-panel" class="flex-grow-1 bg-dark">
+                <canvas id="canvas-container"></canvas>
             </div>
 
-            <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow" style="width: 280px">
+            <div id="right-panel" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow" style="width: 280px; z-index: 500">
                 <div class="row">
                     <label for="item-type" class="col-sm-4 col-form-label col-form-label-sm ">Type</label>
                     <div class="col-sm-8">
@@ -59,8 +60,8 @@
                     <label for="item-position-x" class="col-sm-4 col-form-label col-form-label-sm ">Position</label>
                     <div class="col-sm-8">
                     <div class="input-group input-group-sm">
-                        <input data-numscrubber type="number" class="form-control form-control-sm bg-transparent text-white" id="item-position-x">
-                        <input data-numscrubber type="number" class="form-control form-control-sm bg-transparent text-white" id="item-position-y">
+                        <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-position-x">
+                        <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-position-y">
                     </div>
                     </div>
                 </div>
@@ -69,16 +70,26 @@
                     <label for="item-scale-x" class="col-sm-4 col-form-label col-form-label-sm ">Scale</label>
                     <div class="col-sm-8">
                     <div class="input-group input-group-sm">
-                        <input data-numscrubber type="number" class="form-control form-control-sm bg-transparent text-white" id="item-scale-x">
-                        <input data-numscrubber type="number" class="form-control form-control-sm bg-transparent text-white" id="item-scale-y">
+                        <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-scale-x">
+                        <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-scale-y">
                     </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <label for="item-rotation" class="col-sm-4 col-form-label col-form-label-sm ">Rotation</label>
+                    <label for="item-angle" class="col-sm-4 col-form-label col-form-label-sm ">Angle</label>
                     <div class="col-sm-8">
-                        <input data-numscrubber type="number" class="form-control form-control-sm bg-transparent text-white" id="item-rotation">
+                        <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-angle">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="item-pivot-x" class="col-sm-4 col-form-label col-form-label-sm ">Pivot</label>
+                    <div class="col-sm-8">
+                        <div class="input-group input-group-sm">
+                            <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-pivot-x">
+                            <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-pivot-y">
+                        </div>
                     </div>
                 </div>
 
@@ -90,9 +101,36 @@
                 </div>
 
                 <div class="row">
+                    <label for="item-alpha" class="col-sm-4 col-form-label col-form-label-sm ">Alpha</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control form-control-sm bg-transparent text-white" id="item-alpha">
+                    </div>
+                </div>
+
+                <div class="row">
                     <label for="item-tint" class="col-sm-4 col-form-label col-form-label-sm ">Tint</label>
                     <div class="col-sm-8">
                         <input type="text" class="form-control form-control-sm bg-transparent text-white" id="item-tint" placeholder='#563d7c'>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="row">
+                    <label for="item-texture" class="col-sm-4 col-form-label col-form-label-sm ">Texture</label>
+                    <div class="col-sm-8">
+                        <img width='64' height='64' />
+                        <input type="hidden" class="form-control form-control-sm bg-transparent text-white" id="item-texture">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="item-anchor-x" class="col-sm-4 col-form-label col-form-label-sm ">Anchor</label>
+                    <div class="col-sm-8">
+                        <div class="input-group input-group-sm">
+                            <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-anchor-x">
+                            <input type="number" class="form-control form-control-sm bg-transparent text-white" id="item-anchor-y">
+                        </div>
                     </div>
                 </div>
 

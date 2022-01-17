@@ -5,7 +5,7 @@ export const createItemAction = createAction('CREATE_ITEM', (item: Partial<Item>
     payload: item,
 }));
 
-export const updateItemAction = createAction('UPDATE_ITEM', (id:string, item: DeepPartial<Item>) => ({
+export const updateItemAction = createAction('UPDATE_ITEM', (id:string, item: Partial<Item>) => ({
     payload: {id, item},
 }));
 

@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import { configureStore, ThunkAction } from '@reduxjs/toolkit';
+import { configureStore, nanoid, ThunkAction } from '@reduxjs/toolkit';
 import { rootReducer } from 'Reducer';
 
 export enum PixiType {
@@ -20,16 +20,25 @@ export type Item = {
     selected: boolean;
     opened: boolean;
     disabled: boolean;
+
+    // Container
     position: { x: number; y: number };
     scale: { x: number; y: number };
-    rotation: number;
+    angle: number;
     tint: number;
+    pivot: { x: number; y: number };
+    visible: boolean;
+    alpha: number;
+    //
+
+    // Sprite
+    anchor: { x: number; y: number };
+    texture: string;
+    //
 
     childIndex: number;
 
     type: PixiType;
-    visible: boolean;
-    alpha: number;
 };
 
 export type UndoState = Omit<EditorState, 'undo' | 'redo'>;
@@ -40,82 +49,63 @@ export type EditorState = {
     items: Item[];
 };
 
+export function getItem(props: Partial<Item>): Item {
+    props.id = props.id === undefined ? nanoid(10) : props.id;
+    props.type = props.type === undefined ? PixiType.CONTAINER : props.type;
+    props.name = props.name === undefined ? props.type + '_' + props.id : props.name;
+    return {
+        id: props.id,
+        name: props.name,
+        type: props.type,
+
+        //
+        parent: null,
+        selected: false,
+        opened: false,
+        disabled: false,
+
+        // Container
+        position: { x: 0, y: 0 },
+        scale: { x: 1, y: 1 },
+        angle: 0,
+        tint: 0,
+        pivot: { x: 0, y: 0 },
+        visible: true,
+        alpha: 1,
+        //
+
+        // Sprite
+        anchor: { x: 0, y: 0 },
+        texture: 'string',
+        //
+
+        childIndex: 0,
+
+        ...props,
+    };
+}
+
 export const preloadedState: EditorState = {
     undo: [],
     redo: [],
     items: [
-        {
+        getItem({
             id: 'root_1',
-            parent: null,
-            name: 'root_1',
-            selected: false,
-            opened: true,
-            disabled: false,
-            type: PixiType.CONTAINER,
-            position: { x: 0, y: 0 },
-            scale: { x: 1, y: 1 },
-            rotation: 0,
-            tint:0,
-
-            childIndex: 0,
-
-            visible: true,
-            alpha: 1,
-        },
-        {
+        }),
+        getItem({
             id: 'root_2',
-            parent: null,
-            name: 'root_2',
-            selected: false,
-            opened: true,
-            disabled: false,
-            type: PixiType.CONTAINER,
             position: { x: 100, y: 0 },
-            scale: { x: 1, y: 1 },
-            rotation: 0,
-            tint:0,
-
-            childIndex: 1,
-
-            visible: true,
-            alpha: 1,
-        },
-        {
+        }),
+        getItem({
             id: 'sprite_1',
             parent: 'root_1',
-            name: 'sprite_1',
-            selected: false,
-            opened: true,
-            disabled: false,
             type: PixiType.SPRITE,
-            position: { x: 0, y: 0 },
-            scale: { x: 1, y: 1 },
-            rotation: 0,
-            tint:0,
-
-            childIndex: 0,
-
-            visible: true,
-            alpha: 1,
-        },
-        {
+        }),
+        getItem({
             id: 'sprite_2',
             parent: 'root_2',
-            name: 'sprite_2',
-            selected: false,
-            opened: true,
-            disabled: false,
             type: PixiType.SPRITE,
-            position: { x: 0, y: 0 },
-            scale: { x: 1, y: 1 },
-            rotation: 0,
-            tint:0,
-
-            childIndex: 1,
-
-            visible: true,
-            alpha: 1,
-        },
+        }),
     ],
 };
 

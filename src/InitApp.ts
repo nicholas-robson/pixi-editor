@@ -2,6 +2,8 @@ import { EditorState, Item, PixiType, subscribe } from 'State';
 import { Application, Bounds, Container, Graphics, ParticleRenderer, Renderer, Sprite, Texture } from 'pixi.js';
 import { InteractionManager } from '@pixi/interaction';
 import { createSelector } from 'reselect';
+import { Viewport } from 'pixi-viewport';
+import { drawGrid } from 'Grid';
 
 type PixiObject = Container & { id: string };
 
@@ -15,7 +17,7 @@ export function initApp(state: EditorState) {
     const app = new Application({
         view: canvas,
         autoStart: true,
-        resizeTo: canvas.parentElement!,
+        resizeTo: window,
         backgroundColor: 0x000000,
         sharedTicker: true,
     });
@@ -28,13 +30,111 @@ export function initApp(state: EditorState) {
     (window as any).app = app;
 
     function Resize() {
-        //
+        viewport.resize(window.innerWidth, window.innerHeight, window.innerWidth, window.innerHeight);
     }
 
+    function DrawGrid() {
+        drawGrid(grid, {
+            gridWidth: viewport.worldWidth,
+            gridHeight: viewport.worldHeight,
+            columnWidth: 100 * viewport.scale.x,
+            rowHeight: 100 * viewport.scale.x,
+            offsetX:-viewport.left * viewport.scale.x,
+            offsetY:-viewport.top * viewport.scale.x,
+            lineColor : 0x333333
+        });
+        drawGrid(grid, {
+            gridWidth: viewport.worldWidth,
+            gridHeight: viewport.worldHeight,
+            columnWidth: 300 * viewport.scale.x,
+            rowHeight: 300 * viewport.scale.x,
+            offsetX:-viewport.left * viewport.scale.x,
+            offsetY:-viewport.top * viewport.scale.x,
+            lineColor : 0x666666,
+            lineWidth : 3,
+            lineNative: false
+        }, false);
+    }
+
+    const viewport = new Viewport({
+        screenWidth: window.innerWidth,
+        screenHeight: window.innerHeight,
+        worldWidth: window.innerWidth,
+        worldHeight: window.innerHeight,
+
+        interaction: app.renderer.plugins.interaction,
+    });
+
+    viewport
+        .drag()
+        .pinch()
+        .wheel()
+        .decelerate()
+        .on('zoomed', () => {
+            DrawGrid();
+        })
+        .on('moved', () => {
+            DrawGrid();
+        });
+
+    const grid = new Graphics();
     const scene = new Container();
     const debug = new Graphics();
-    app.stage.addChild(scene);
+
+    viewport.addChild(scene);
+
+    app.stage.addChild(grid);
+    app.stage.addChild(viewport);
     app.stage.addChild(debug);
+
+    viewport.moveCenter(0, 0);
+    DrawGrid();
+
+    ///
+    //     const width = viewport.worldWidth;
+    //     const height = viewport.worldHeight;
+    //
+    //     console.log(width, height);
+    //
+    //     // grid shader
+    //     const uniforms = {} as any;
+    //     uniforms.vpw = width;
+    //     uniforms.vph = height;
+    //     uniforms.offset = { type: 'v2', value: { x: -0.0235, y: 0.9794 } };
+    //     uniforms.pitch = { type: 'v2', value: { x: 50, y: 50 } };
+    //     uniforms.resolution = { type: 'v2', value: { x: width, y: height } };
+    //
+    //     const shaderCode = `
+    //         precision mediump float;
+    //
+    // uniform float vpw; // Width, in pixels
+    // uniform float vph; // Height, in pixels
+    //
+    // uniform vec2 offset; // e.g. [-0.023500000000000434 0.9794000000000017], currently the same as the x/y offset in the mvMatrix
+    // uniform vec2 pitch;  // e.g. [50 50]
+    //
+    // void main() {
+    //   float lX = gl_FragCoord.x / vpw;
+    //   float lY = gl_FragCoord.y / vph;
+    //
+    //   float scaleFactor = 10000.0;
+    //
+    //   float offX = (scaleFactor * offset[0]) + gl_FragCoord.x;
+    //   float offY = (scaleFactor * offset[1]) + (1.0 - gl_FragCoord.y);
+    //
+    //   if (int(mod(offX, pitch[0])) == 0 ||
+    //       int(mod(offY, pitch[1])) == 0) {
+    //     gl_FragColor = vec4(0.0, 0.0, 0.0, 0.5);
+    //   } else {
+    //     gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    //   }
+    // }`;
+    //     const gridShader = new Filter('', shaderCode, uniforms);
+    //     const rect = new Graphics().beginFill(0xFFFFFF).drawRect(0, 0, width, height);
+    //     rect.filters = [gridShader];
+    //     scene.addChild(rect);
+
+    ///
 
     const pixiObjects: PixiObject[] = [];
 
@@ -105,7 +205,7 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
 
     pixiObject.position.set(item.position.x, item.position.y);
     pixiObject.scale.set(item.scale.x, item.scale.y);
-    pixiObject.rotation = item.rotation;
+    pixiObject.angle = item.angle;
     pixiObject.alpha = item.alpha;
     pixiObject.visible = item.visible;
 

@@ -17,17 +17,19 @@ function getJSTreeData(items: Item[]) {
         .sort((a, b) => {
             return a.childIndex - b.childIndex;
         })
-        .map((item) => ({
-            id: item.id,
-            parent: item.parent === null ? '#' : item.parent,
-            text: item.name,
-            opened: item.opened,
-            selected: item.selected,
-            disabled: item.disabled,
-            data: { type: item.type },
-            type: item.type,
-            position: item.childIndex,
-        }));
+        .map((item) => {
+            return {
+                id: item.id,
+                parent: item.parent === null ? '#' : item.parent,
+                text: item.name,
+                opened: item.opened,
+                selected: item.selected,
+                disabled: item.disabled,
+                data: { type: item.type },
+                type: item.type,
+                position: item.childIndex,
+            }
+        });
 }
 
 export function initTree(state: EditorState) {

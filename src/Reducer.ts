@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { EditorState, Item, PixiType, UndoState } from 'State';
+import { EditorState, getItem, Item, UndoState } from 'State';
 import {
     createItemAction,
     deleteAction,
@@ -15,41 +15,8 @@ import {
     undoAction,
     updateItemAction,
 } from 'Actions';
-import { DeepPartial, nanoid } from '@reduxjs/toolkit';
 
-function createItem(state: EditorState, item: Partial<Item>): EditorState {
-    const id = item.id ? item.id : nanoid(10);
-    const name = item.name ? item.name : item.type ? item.type : 'untitled';
-    const type = item.type ? item.type : PixiType.CONTAINER;
 
-    return {
-        ...state,
-        items: [
-            ...state.items,
-            {
-                id,
-                name,
-                type,
-
-                parent: null,
-                childIndex: 0,
-                selected: false,
-                disabled: false,
-                opened: false,
-
-                visible: true,
-                alpha: 1,
-                position: { x: 0, y: 0 },
-                scale: { x: 1, y: 1 },
-                rotation: 0,
-                tint: 0,
-
-                // Override.
-                ...item,
-            },
-        ],
-    };
-}
 
 export function rootReducer(state: EditorState, action: Action): EditorState {
     if (moveItemsAction.match(action)) {
@@ -140,7 +107,14 @@ export function rootReducer(state: EditorState, action: Action): EditorState {
     return state;
 }
 
-function updateItem(state: EditorState, id: string, partialItem: DeepPartial<Item>) {
+function createItem(state: EditorState, item: Partial<Item>): EditorState {
+    return {
+        ...state,
+        items: [...state.items, getItem(item)],
+    };
+}
+
+function updateItem(state: EditorState, id: string, partialItem: Partial<Item>): EditorState {
     return {
         ...state,
         items: state.items.map((item) => {
@@ -149,8 +123,6 @@ function updateItem(state: EditorState, id: string, partialItem: DeepPartial<Ite
             return {
                 ...item,
                 ...partialItem,
-                position: { ...item.position, ...partialItem.position },
-                scale: { ...item.scale, ...partialItem.scale },
             };
         }),
     };

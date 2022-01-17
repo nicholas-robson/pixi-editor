@@ -13,3 +13,19 @@ main {
     border-radius: 5px;
     padding: 10px 5px;
 }
+
+#canvas-container {
+    position: absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
+
+.gutter {
+    background: rgb(50, 59, 66) none repeat scroll 0% 0%;
+    z-index: 550;
+}
+.gutter-horizontal {
+    cursor:col-resize;
+}

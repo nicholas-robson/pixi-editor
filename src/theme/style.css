@@ -1190,5 +1190,9 @@ filter: gray;
 }
 
 .vakata-context {
-  z-index:501;
+  z-index: 750;
+}
+
+.jstree {
+  overflow:hidden;
 }

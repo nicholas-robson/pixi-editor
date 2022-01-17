@@ -6,7 +6,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     devtool: 'source-map',
-    entry: ['./vendor/jstree/jstree.js', './src/Entry.ts'],
+    entry: ['./src/Entry.ts'],
     mode: 'development',
     module: {
         rules: [
@@ -15,7 +15,7 @@ module.exports = {
                 use: ['style-loader', 'css-loader'],
             },
             {
-                test: /\.ts|js?$/,
+                test: /(\.ts)$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
@@ -40,6 +40,6 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             __ENVIRONMENT__: JSON.stringify('development'),
-        }),
+        })
     ],
 };
