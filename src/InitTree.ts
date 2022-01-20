@@ -35,7 +35,7 @@ function getJSTreeData(items: Item[]) {
 export function initTree(state: EditorState) {
     const tree = $('#tree-container');
     tree.jstree({
-        plugins: ['search', 'changed', 'contextmenu', 'conditionalselect', 'dnd', 'types', 'wholerow'],
+        plugins: ['search', 'changed', 'conditionalselect', 'dnd', 'types', 'wholerow'], // contextmenu
         core: {
             data: getJSTreeData(state.items),
             themes: { name: 'custom-theme', responsive: true, dots: false, icons: true, variant: 'large' },
@@ -60,71 +60,71 @@ export function initTree(state: EditorState) {
             copy: false,
         },
 
-        contextmenu: {
-            select_node: false,
-            items: (node: any) => ({
-                create: {
-                    label: 'Create',
-                    icon: 'bi bi-plus-square',
-                    submenu: {
-                        container: {
-                            label: 'Container',
-                            icon: 'bi bi-folder',
-                            action: () => {
-                                dispatch(
-                                    createItemAction({
-                                        parent: node.id,
-                                        type: PixiType.CONTAINER,
-                                    })
-                                );
-                            },
-                        },
-                        sprite: {
-                            label: 'Sprite',
-                            icon: 'bi bi-image',
-                            action: () => {
-                                dispatch(
-                                    createItemAction({
-                                        parent: node.id,
-                                        type: PixiType.SPRITE,
-                                    })
-                                );
-                            },
-                        },
-                    },
-                    separator_after: true,
-                },
-                // copy: {
-                //     label: 'Copy',
-                //     icon: 'bi bi-clipboard',
-                // },
-                // cut: {
-                //     label: 'Cut',
-                //     icon: 'bi bi-scissors',
-                // },
-                // paste: {
-                //     label: 'Paste',
-                //     icon: 'bi bi-clipboard-check',
-                //     _disabled: () => false,
-                //     separator_after: true,
-                // },
-                rename: {
-                    label: 'Rename',
-                    icon: 'bi bi-pencil',
-                    action: () => {
-                        $(tree).jstree(true).edit(node);
-                    },
-                    separator_after: true,
-                },
-                remove: {
-                    label: 'Delete',
-                    icon: 'bi bi-trash',
-                    action: () => {
-                        dispatch(deleteItemsAction([node.id]));
-                    },
-                },
-            }),
-        },
+        // contextmenu: {
+            // select_node: false,
+            // items: (node: any) => ({
+            //     create: {
+            //         label: 'Create',
+            //         icon: 'bi bi-plus-square',
+            //         submenu: {
+            //             container: {
+            //                 label: 'Container',
+            //                 icon: 'bi bi-folder',
+            //                 action: () => {
+            //                     dispatch(
+            //                         createItemAction({
+            //                             parent: node.id,
+            //                             type: PixiType.CONTAINER,
+            //                         })
+            //                     );
+            //                 },
+            //             },
+            //             sprite: {
+            //                 label: 'Sprite',
+            //                 icon: 'bi bi-image',
+            //                 action: () => {
+            //                     dispatch(
+            //                         createItemAction({
+            //                             parent: node.id,
+            //                             type: PixiType.SPRITE,
+            //                         })
+            //                     );
+            //                 },
+            //             },
+            //         },
+            //         separator_after: true,
+            //     },
+            //     // copy: {
+            //     //     label: 'Copy',
+            //     //     icon: 'bi bi-clipboard',
+            //     // },
+            //     // cut: {
+            //     //     label: 'Cut',
+            //     //     icon: 'bi bi-scissors',
+            //     // },
+            //     // paste: {
+            //     //     label: 'Paste',
+            //     //     icon: 'bi bi-clipboard-check',
+            //     //     _disabled: () => false,
+            //     //     separator_after: true,
+            //     // },
+            //     rename: {
+            //         label: 'Rename',
+            //         icon: 'bi bi-pencil',
+            //         action: () => {
+            //             $(tree).jstree(true).edit(node);
+            //         },
+            //         separator_after: true,
+            //     },
+            //     remove: {
+            //         label: 'Delete',
+            //         icon: 'bi bi-trash',
+            //         action: () => {
+            //             dispatch(deleteItemsAction([node.id]));
+            //         },
+            //     },
+            // }),
+        // },
 
         search: {
             show_only_matches: true,

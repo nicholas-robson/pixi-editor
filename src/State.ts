@@ -24,6 +24,7 @@ export type Item = {
     // Container
     position: { x: number; y: number };
     scale: { x: number; y: number };
+    skew: { x: number; y: number };
     angle: number;
     tint: number;
     pivot: { x: number; y: number };
@@ -67,6 +68,7 @@ export function getItem(props: Partial<Item>): Item {
         // Container
         position: { x: 0, y: 0 },
         scale: { x: 1, y: 1 },
+        skew: { x: 0, y: 0 },
         angle: 0,
         tint: 0,
         pivot: { x: 0, y: 0 },

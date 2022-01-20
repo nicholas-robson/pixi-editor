@@ -61,9 +61,14 @@ export function drawGrid(graphics: Graphics, options: Partial<GridOptions> = {},
         graphics.lineTo(newOptions.gridWidth, y);
     }
 }
-function wrap(value: number, max: number) {
+export function wrap(value: number, max: number, min:number = 0) {
     //return ((value % max) + max) % max;
 
-    value = value%max;
-    return value<0 ? value+max : value;
+    // value = value%max;
+    // return value<0 ? value+max : value;
+
+
+
+    const maxLessMin = max - min;
+    return ((value - min) % maxLessMin + maxLessMin) % maxLessMin + min;
 }

@@ -14,9 +14,8 @@ import {
     selectItemsAction,
     undoAction,
     updateItemAction,
+    updateItemsAction,
 } from 'Actions';
-
-
 
 export function rootReducer(state: EditorState, action: Action): EditorState {
     if (moveItemsAction.match(action)) {
@@ -30,6 +29,19 @@ export function rootReducer(state: EditorState, action: Action): EditorState {
         state = pushUndoState(state);
 
         return updateItem(state, action.payload.id, action.payload.item);
+    }
+
+    if (updateItemsAction.match(action)) {
+        state = pushUndoState(state);
+
+        // TODO: A bit ugly.
+        return action.payload.reduce(
+            (acc, v) => ({
+                ...acc,
+                ...updateItem(state, v.id, v),
+            }),
+            state
+        );
     }
 
     if (renameItemAction.match(action)) {

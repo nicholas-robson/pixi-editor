@@ -9,6 +9,10 @@ export const updateItemAction = createAction('UPDATE_ITEM', (id:string, item: Pa
     payload: {id, item},
 }));
 
+export const updateItemsAction = createAction('UPDATE_ITEMS', (items: Item[]) => ({
+    payload: items,
+}));
+
 export const moveItemsAction = createAction('MOVE_ITEMS', (ids: string[], position: number, parent: string | null) => ({
     payload: { ids, position, parent },
 }));
