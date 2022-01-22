@@ -30,6 +30,7 @@
     "@types/bootstrap": "^5.1.8",
     "@types/jquery.contextmenu": "^1.7.35",
     "@types/pixi.js": "^5.0.0",
+    "circular-dependency-plugin": "^5.2.2",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
     "file-loader": "^6.2.0",

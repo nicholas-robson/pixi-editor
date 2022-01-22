@@ -20,6 +20,13 @@ export function updateItem(state: EditorState, id: string, partialItem: Partial<
             item.scale = { x: roundTo(item.scale.x, 3), y: roundTo(item.scale.y, 3) };
             item.angle = roundTo(item.angle, 3);
 
+            item.width = roundTo(item.width, 3);
+            item.height = roundTo(item.height, 3);
+            item.topHeight = roundTo(item.topHeight, 3);
+            item.rightWidth = roundTo(item.rightWidth, 3);
+            item.leftWidth = roundTo(item.leftWidth, 3);
+            item.bottomHeight = roundTo(item.bottomHeight, 3);
+
             return item;
         }),
     };

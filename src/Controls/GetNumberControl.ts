@@ -1,30 +1,30 @@
 import { subscribe } from 'State/State';
-import { Prop, typeHasProp } from 'Views/PixiApp/InitApp';
 import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
-import { Control, getSelector, onNumberInput } from 'Controls/Controls';
-import { Item } from 'State/Item';
+import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
+import { typeHasProp } from 'Views/Inspector/TypeHasProp';
+import { Prop } from 'Views/Inspector/Prop';
 
-export function getNumberControl<T extends keyof Item>(prop: Prop<T>): Control<number> {
+export function getNumberControl(prop: Prop<number>): Control {
     const element = $(`
-<div id='control-${prop.key}' class='row'>
-    <label for='${prop.key}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
+<div id='control-${prop.id}' class='row'>
+    <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
-        <input type='number' class='form-control form-control-sm bg-transparent text-white' id='${prop.key}'
+        <input type='number' class='form-control form-control-sm bg-transparent text-white' id='${prop.id}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>
     </div>
 </div>
     `);
 
-    const selector = getSelector(prop.key, (item, value) => {
+    const selector = getSelector(prop, (item, value) => {
         const hasType = item !== undefined && typeHasProp(item.type, prop);
 
         if (!hasType) {
             element.hide();
         } else {
             element.show();
-            //   $(`#${prop.key}`).prop('disabled', item === undefined);
-            $(`#${prop.key}`).val((value as number) ?? '');
+            //   $(`#${prop.id}`).prop('disabled', item === undefined);
+            $(`#${prop.id}`).val(value ?? '');
         }
     });
 
@@ -33,8 +33,12 @@ export function getNumberControl<T extends keyof Item>(prop: Prop<T>): Control<n
     return {
         element,
         onAttach: () => {
-            $(`#${prop.key}`).on('change', () => {
-                onNumberInput(prop.key);
+            $(`#${prop.id}`).on('change', () => {
+                const value = $(`#${prop.id}`).val();
+
+                if (!isNumeric(value)) return;
+
+                onChange(prop, value);
             });
         },
         selector,

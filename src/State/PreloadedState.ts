@@ -23,5 +23,17 @@ export const preloadedState: EditorState = {
             parent: 'root_2',
             type: PixiType.SPRITE,
         }),
+        getItem({
+            id: 'nine_slice_1',
+            type: PixiType.NINE_SLICE,
+            texture: "nine-slice-test.png",
+            position: {x:200, y:100},
+            topHeight:30,
+            leftWidth:25,
+            rightWidth:25,
+            bottomHeight:45,
+            width:350,
+            height:350
+        }),
     ],
 };

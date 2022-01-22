@@ -1,30 +1,35 @@
-import { Prop, typeHasProp } from 'Views/PixiApp/InitApp';
 import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
 import { getLabel } from 'Controls/GetLabel';
-import { Item } from 'State/Item';
+import { typeHasProp } from 'Views/Inspector/TypeHasProp';
+import { Prop } from 'Views/Inspector/Prop';
 
-export function getImageControl(prop: Prop<string>): Control<string> {
+export function getImageControl(prop: Prop<string>): Control {
     const element = $(`
-<div id='control-${prop.key}' class='row'>
-    <label for='${prop.key}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
+<div id='control-${prop.id}' class='row'>
+    <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
-        <img width='64' height='64'  alt='banana'/>
-        <input type='hidden' class='form-control form-control-sm bg-transparent text-white' id='${prop.key}'>
+        <img class='img-thumbnail d-block' width='64' height='64'  alt='image' id='image-${prop.id}'/>
+        <input type='hidden' class='form-control form-control-sm bg-transparent text-white' id='${prop.id}'>
     </div>
 </div>
     `);
 
-    const selector = getSelector(prop.key, (item, value) => {
+    const selector = getSelector(prop, (item, value) => {
         const hasType = item !== undefined && typeHasProp(item.type, prop);
 
         if (!hasType) {
             element.hide();
         } else {
             element.show();
-            //$(`#${prop.key}`).prop('disabled', item === undefined);
-            $(`#${prop.key}`).val((value as number) ?? '');
+            //$(`#${prop.id}`).prop('disabled', item === undefined);
+            $(`#${prop.id}`).val(value ?? '');
+            if (value) {
+                $(`#image-${prop.id}`).attr("src", `resource/${value}`);
+            } else {
+
+            }
         }
     });
 
@@ -33,9 +38,9 @@ export function getImageControl(prop: Prop<string>): Control<string> {
     return {
         element,
         onAttach: () => {
-            $(`#${prop.key}`).on('change', () => {
-                const value = $(`#${prop.key}`).val() as Item[typeof prop.key];
-                onChange({ [prop.key]: value });
+            $(`#${prop.id}`).on('change', () => {
+                const value = $(`#${prop.id}`).val() as string;
+                onChange(prop, value);
             });
         },
         selector,

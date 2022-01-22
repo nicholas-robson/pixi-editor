@@ -1,30 +1,31 @@
-import { Prop, typeHasProp } from 'Views/PixiApp/InitApp';
 import { getLabel } from 'Controls/GetLabel';
 import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
+import { typeHasProp } from 'Views/Inspector/TypeHasProp';
+import { Prop } from 'Views/Inspector/Prop';
 
-export function getColorControl(prop: Prop<string>): Control<string> {
+export function getColorControl(prop: Prop<number>): Control {
     const element = $(`
-<div id='control-${prop.key}' class='row'>
-    <label for='${prop.key}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
+<div id='control-${prop.id}' class='row'>
+    <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
         <input type='color' class='form-control form-control-sm bg-transparent text-white' id='${
-            prop.key
+            prop.id
         }' placeholder='#563d7c'>
     </div>
 </div>
     `);
 
-    const selector = getSelector(prop.key, (item, value) => {
+    const selector = getSelector(prop, (item, value) => {
         const hasType = item !== undefined && typeHasProp(item.type, prop);
 
         if (!hasType) {
             element.hide();
         } else {
             element.show();
-            //   $(`#${prop.key}`).prop('disabled', item === undefined);
-            $(`#${prop.key}`).val(`#${(value as number)?.toString(16)}` ?? '');
+            //   $(`#${prop.id}`).prop('disabled', item === undefined);
+            $(`#${prop.id}`).val(`#${value?.toString(16)}` ?? '');
         }
     });
 
@@ -33,12 +34,11 @@ export function getColorControl(prop: Prop<string>): Control<string> {
     return {
         element,
         onAttach: () => {
-            $(`#${prop.key}`).on('change', () => {
-                const value = $(`#${prop.key}`).val();
+            $(`#${prop.id}`).on('change', () => {
+                const value = $(`#${prop.id}`).val();
                 const hex = (value as string).substring(1); // Exclude '#'.
                 if (hex === '') return;
-
-                onChange({ [prop.key]: parseInt(hex, 16) });
+                onChange(prop, parseInt(hex, 16));
             });
         },
         selector,

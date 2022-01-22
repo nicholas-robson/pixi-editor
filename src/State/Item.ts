@@ -28,7 +28,8 @@ export type Item = {
     //
 
     // Nine Slice
-    size: Vector2;
+    width: number;
+    height: number;
     topHeight: number;
     rightWidth: number;
     bottomHeight: number;

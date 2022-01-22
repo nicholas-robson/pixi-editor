@@ -3,6 +3,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
     devtool: 'source-map',
@@ -40,6 +41,14 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             __ENVIRONMENT__: JSON.stringify('development'),
-        })
+        }),
+        new CopyWebpackPlugin({
+            patterns: ['resource'],
+        }),
+        new CircularDependencyPlugin({
+            include: /src/,
+            failOnError: true,
+            cwd: process.cwd(),
+        }),
     ],
 };

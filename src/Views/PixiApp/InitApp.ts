@@ -19,8 +19,6 @@ import $ from 'jquery';
 import { getContextMenu } from 'Views/ContextMenu';
 import { deselectAllAction, selectItemsAction, updateItemsAction } from 'State/Actions';
 import { Transformer } from '@pixi-essentials/transformer';
-import { ControlType } from 'Views/InitInspector';
-import { ControlOptions } from 'Controls/Controls';
 import { Item } from 'State/Item';
 import { EditorState } from 'State/EditorState';
 import { PixiType } from 'State/PixiType';
@@ -153,6 +151,7 @@ export function initApp(state: EditorState) {
 
     transformer.on('transformcommit', () => {
         const items = pixiObjectToItems(getState(), transformer.group as PixiObject[]);
+
         //console.log(items);
         dispatch(updateItemsAction(items));
     });
@@ -328,34 +327,65 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
     pixiObject.visible = item.visible;
 
     if (pixiObject instanceof Sprite) {
-        pixiObject.texture = Texture.WHITE;
-        pixiObject.tint = item.tint;
+        setTexture(pixiObject, item.texture);
 
+        pixiObject.tint = item.tint;
         pixiObject.anchor.set(item.anchor.x, item.anchor.y);
     }
 
     if (pixiObject instanceof NineSlicePlane) {
-        pixiObject.texture = Texture.WHITE;
+        setTexture(pixiObject, item.texture);
         pixiObject.tint = item.tint;
 
-        pixiObject.width = item.size.x;
-        pixiObject.height = item.size.y;
+        pixiObject.width = item.width;
+        pixiObject.height = item.height;
 
         pixiObject.topHeight = item.topHeight;
         pixiObject.rightWidth = item.rightWidth;
         pixiObject.bottomHeight = item.bottomHeight;
         pixiObject.leftWidth = item.leftWidth;
+
+        pixiObject.updateHorizontalVertices();
+        pixiObject.updateVerticalVertices();
+        pixiObject.textureUpdated();
+        pixiObject.calculateBounds();
+        pixiObject.calculateUvs();
+        pixiObject.calculateVertices();
     }
 }
 
+async function setTexture(pixiObject: Sprite | NineSlicePlane, texturePath: string) {
+    pixiObject.texture = Texture.WHITE;
+    try {
+        const texture = await Texture.fromURL(`resource/${texturePath}`);
+        pixiObject.texture = texture;
+    } catch (e) {}
+}
+
 function pixiObjectToItems(state: EditorState, pixiObjects: PixiObject[]): Item[] {
-    return pixiObjects.map((pixiObject) => ({
-        ...(state.items.find((item) => item.id === pixiObject.id) as Item),
-        position: { x: pixiObject.position.x, y: pixiObject.position.y },
-        scale: { x: pixiObject.scale.x, y: pixiObject.scale.y },
-        skew: { x: pixiObject.skew.x, y: pixiObject.skew.y },
-        angle: pixiObject.angle,
-    }));
+    return pixiObjects.map((pixiObject) => {
+        const originalItem = state.items.find((item) => item.id === pixiObject.id) as Item;
+
+        const item = {
+            ...originalItem,
+            position: { x: pixiObject.position.x, y: pixiObject.position.y },
+            skew: { x: pixiObject.skew.x, y: pixiObject.skew.y },
+            angle: pixiObject.angle,
+        };
+
+        if (pixiObject instanceof NineSlicePlane) {
+            // Set width/height instead.
+            item.width = originalItem.width * (pixiObject.scale.x / originalItem.scale.x);
+            item.height = originalItem.height * (pixiObject.scale.y / originalItem.scale.y);
+
+            // Reset object scale.
+            pixiObject.scale.set(originalItem.scale.x, originalItem.scale.y);
+        } else {
+            item.scale = { x: pixiObject.scale.x, y: pixiObject.scale.y };
+        }
+
+        return item;
+    });
 }
 
 function createType(type: PixiType) {
@@ -369,55 +399,6 @@ function createType(type: PixiType) {
         case PixiType.DISPLAY_OBJECT:
             throw new Error('Cannot create display object.');
     }
-}
-
-export type Prop<T extends Item[keyof Item]> = {
-    key: keyof Item;
-    control: ControlType;
-    controlOptions?: ControlOptions<T>;
-};
-
-const defaultProps: Prop<any>[] = [
-    { key: 'type', control: ControlType.STRING, controlOptions: { readonly: true } },
-    { key: 'id', control: ControlType.STRING, controlOptions: { readonly: true } },
-    { key: 'name', control: ControlType.STRING },
-    { key: 'position', control: ControlType.VECTOR2 },
-    { key: 'scale', control: ControlType.VECTOR2 },
-    { key: 'angle', control: ControlType.NUMBER },
-    { key: 'skew', control: ControlType.VECTOR2, controlOptions: { step: 0.1 } },
-    { key: 'pivot', control: ControlType.VECTOR2 },
-    { key: 'visible', control: ControlType.BOOLEAN },
-    { key: 'interactive', control: ControlType.BOOLEAN },
-    { key: 'buttonMode', control: ControlType.BOOLEAN },
-    { key: 'alpha', control: ControlType.NUMBER },
-];
-
-export const typePropMap: Record<PixiType, Prop<any>[]> = {
-    [PixiType.DISPLAY_OBJECT]: [],
-    [PixiType.CONTAINER]: [...defaultProps],
-    [PixiType.SPRITE]: [
-        ...defaultProps,
-        { control: ControlType.SEPARATOR } as unknown as Prop<any>,
-        { key: 'anchor', control: ControlType.VECTOR2, controlOptions: { step: 0.1 } },
-        { key: 'tint', control: ControlType.COLOR },
-        { key: 'texture', control: ControlType.TEXTURE },
-    ],
-    [PixiType.NINE_SLICE]: [
-        ...defaultProps,
-
-        { control: ControlType.SEPARATOR } as unknown as Prop<any>,
-        { key: 'tint', control: ControlType.COLOR },
-        { key: 'texture', control: ControlType.TEXTURE },
-        { key: 'size', control: ControlType.VECTOR2 },
-        { key: 'topHeight', control: ControlType.NUMBER },
-        { key: 'rightWidth', control: ControlType.NUMBER },
-        { key: 'bottomHeight', control: ControlType.NUMBER },
-        { key: 'leftWidth', control: ControlType.NUMBER },
-    ],
-};
-
-export function typeHasProp(type: PixiType, prop: Prop<any>) {
-    return typePropMap[type].includes(prop);
 }
 
 function Resize(viewport: Viewport) {
@@ -509,15 +490,4 @@ function DrawGrid(
     //     debug.lineTo(rect.x, rect.y + rect.height);
     //     debug.lineTo(rect.x, rect.y);
     // }
-}
-
-function hasParent(displayObject: DisplayObject, target: DisplayObject) {
-    let parent = displayObject;
-
-    while (parent.parent !== null) {
-        if (parent === target) return true;
-        parent = parent.parent;
-    }
-
-    return false;
 }

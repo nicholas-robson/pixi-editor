@@ -1,7 +1,7 @@
 import { EditorState } from 'State/EditorState';
 import { initTree } from 'Views/InitTree';
 import { initApp } from 'Views/PixiApp/InitApp';
-import { initInspector } from 'Views/InitInspector';
+import { initInspector } from 'Views/Inspector/InitInspector';
 import { initKeyboard } from 'Views/InitKeyboard';
 import { initSplit } from 'Views/InitSplit';
 

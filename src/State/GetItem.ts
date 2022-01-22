@@ -22,7 +22,6 @@ export function getItem(props: Partial<Item>): Item {
         scale: { x: 1, y: 1 },
         skew: { x: 0, y: 0 },
         angle: 0,
-        tint: 0xffffff,
         pivot: { x: 0, y: 0 },
         visible: true,
         alpha: 1,
@@ -33,10 +32,12 @@ export function getItem(props: Partial<Item>): Item {
         // Sprite
         anchor: { x: 0, y: 0 },
         texture: 'string',
+        tint: 0xffffff,
         //
 
         // Nine Slice
-        size: { x: 0, y: 0 },
+        width: 100,
+        height: 100,
         topHeight: 0,
         rightWidth: 0,
         bottomHeight: 0,

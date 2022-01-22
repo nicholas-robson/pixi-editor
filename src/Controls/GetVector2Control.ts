@@ -1,16 +1,18 @@
-import { Prop, typeHasProp } from 'Views/PixiApp/InitApp';
 import { subscribe } from 'State/State';
 import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
-import { Control, getSelector, onVector2Input } from 'Controls/Controls';
+import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
 import { Vector2 } from 'Utility/Vector2';
+import { typeHasProp } from 'Views/Inspector/TypeHasProp';
+import { Prop } from 'Views/Inspector/Prop';
+import { Item } from 'State/Item';
 
-export function getVector2Control(prop: Prop<Vector2>): Control<Vector2> {
-    const xID = `${prop.key}-x`;
-    const yID = `${prop.key}-y`;
+export function getVector2Control(prop: Prop<Vector2>): Control {
+    const xID = `${prop.id}-x`;
+    const yID = `${prop.id}-y`;
 
     const element = $(`
-<div id='control-${prop.key}' class='row'>
+<div id='control-${prop.id}' class='row'>
     <label for='${xID}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
     <div class='input-group input-group-sm'>
@@ -23,7 +25,7 @@ export function getVector2Control(prop: Prop<Vector2>): Control<Vector2> {
 </div>
     `);
 
-    const selector = getSelector(prop.key, (item, value) => {
+    const selector = getSelector(prop, (item, value) => {
         const hasType = item !== undefined && typeHasProp(item.type, prop);
 
         if (!hasType) {
@@ -45,13 +47,22 @@ export function getVector2Control(prop: Prop<Vector2>): Control<Vector2> {
         element,
         onAttach: () => {
             $(`#${xID}`).on('change', () => {
-                onVector2Input(prop.key, xID, yID);
+                onVector2Input(prop, xID, yID);
             });
 
             $(`#${yID}`).on('change', () => {
-                onVector2Input(prop.key, xID, yID);
+                onVector2Input(prop, xID, yID);
             });
         },
         selector,
     };
+}
+
+function onVector2Input(prop: Prop<Vector2>, idX: any, idY: any) {
+    const x = $(`#${idX}`).val() as Item['position']['x'];
+    const y = $(`#${idY}`).val() as Item['position']['y'];
+
+    if (!isNumeric(x) || !isNumeric(y)) return;
+
+    onChange(prop, { x, y });
 }
