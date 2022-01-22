@@ -1,10 +1,11 @@
-import { dispatch, EditorState, getState, Item, PixiType, subscribe } from 'State';
+import { dispatch, getState, subscribe } from 'State/State';
 import {
     Application,
     Container,
     DisplayObject,
     Graphics,
     InteractionEvent,
+    NineSlicePlane,
     ParticleRenderer,
     Renderer,
     Sprite,
@@ -13,15 +14,18 @@ import {
 import { InteractionManager } from '@pixi/interaction';
 import { createSelector } from 'reselect';
 import { Viewport } from 'pixi-viewport';
-import { drawGrid } from 'Grid';
+import { drawGrid } from 'Views/PixiApp/Grid';
 import $ from 'jquery';
-import { getContextMenu } from 'ContextMenu';
-import { deselectAllAction, selectItemsAction, updateItemsAction } from 'Actions';
+import { getContextMenu } from 'Views/ContextMenu';
+import { deselectAllAction, selectItemsAction, updateItemsAction } from 'State/Actions';
 import { Transformer } from '@pixi-essentials/transformer';
+import { ControlType } from 'Views/InitInspector';
+import { ControlOptions } from 'Controls/Controls';
+import { Item } from 'State/Item';
+import { EditorState } from 'State/EditorState';
+import { PixiType } from 'State/PixiType';
 
 type PixiObject = Container & { id: string };
-
-
 
 export function initApp(state: EditorState) {
     Renderer.registerPlugin('particle', ParticleRenderer);
@@ -89,9 +93,10 @@ export function initApp(state: EditorState) {
                 mouseButtons: 'left-middle',
             });
         }
-        console.log(e.code);
+        //console.log(e.code);
         if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && !shiftDown) {
             shiftDown = true;
+            transformer.lockAspectRatio = true;
         }
     });
 
@@ -104,6 +109,7 @@ export function initApp(state: EditorState) {
         }
         if ((e.code === 'ShiftLeft' || e.code === 'ShiftLeft') && shiftDown) {
             shiftDown = false;
+            transformer.lockAspectRatio = false;
         }
     });
 
@@ -137,16 +143,17 @@ export function initApp(state: EditorState) {
         boundingBoxes: 'groupOnly',
         transientGroupTilt: false,
         handleStyle: {
-            radius : 8,
-            shape : "square"
+            radius: 8,
+            shape: 'square',
         },
         wireframeStyle: {
-            color : 0x3392e3
-        }
+            color: 0x3392e3,
+        },
     });
 
     transformer.on('transformcommit', () => {
         const items = pixiObjectToItems(getState(), transformer.group as PixiObject[]);
+        //console.log(items);
         dispatch(updateItemsAction(items));
     });
 
@@ -228,7 +235,7 @@ export function initApp(state: EditorState) {
 
         const result = app.renderer.plugins.interaction.hitTest(e.data.global);
 
-        console.log(result);
+        //console.log(result);
 
         // If tapping transformer ignore.
         // const isTransformer = hasParent(result, transformer);
@@ -259,10 +266,9 @@ export function initApp(state: EditorState) {
                 newPixiObject.id = item.id;
                 newPixiObject.interactive = true;
 
-                updatePixiObject(newPixiObject, item, pixiObjects);
+                updatePixiObject(newPixiObject, item, pixiObjects, scene);
 
                 pixiObjects.push(newPixiObject);
-                scene.addChild(newPixiObject);
             });
 
             const removed = pixiIDs.filter((id) => !state.items.map((item) => item.id).includes(id));
@@ -278,7 +284,7 @@ export function initApp(state: EditorState) {
             state.items.forEach((item) => {
                 const obj = pixiObjects.find((p) => p.id === item.id);
                 if (obj === undefined) return;
-                updatePixiObject(obj, item, pixiObjects);
+                updatePixiObject(obj, item, pixiObjects, scene);
             });
 
             const selected = state.items
@@ -299,11 +305,19 @@ export function initApp(state: EditorState) {
     DrawGrid(viewport, grid, background, debug, pixiObjects, canvasWidth, canvasHeight);
 }
 
-function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiObject[]) {
+function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiObject[], scene: Container) {
+    let newParent: Container = scene;
     if (item.parent !== null) {
         const parent = pixiObjects.find((p) => p.id === item.parent);
         if (parent === undefined) throw new Error('Parent pixi object not found!');
-        parent.addChild(pixiObject);
+        newParent = parent;
+    }
+
+    if (!newParent.children.includes(pixiObject)) {
+        // const originalTransform = pixiObject.worldTransform.clone();
+        newParent.addChild(pixiObject);
+        // pixiObject.transform.setFromMatrix(newParent.worldTransform.invert().append(originalTransform));
+        // pixiObject.updateTransform();
     }
 
     pixiObject.position.set(item.position.x, item.position.y);
@@ -315,6 +329,22 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
 
     if (pixiObject instanceof Sprite) {
         pixiObject.texture = Texture.WHITE;
+        pixiObject.tint = item.tint;
+
+        pixiObject.anchor.set(item.anchor.x, item.anchor.y);
+    }
+
+    if (pixiObject instanceof NineSlicePlane) {
+        pixiObject.texture = Texture.WHITE;
+        pixiObject.tint = item.tint;
+
+        pixiObject.width = item.size.x;
+        pixiObject.height = item.size.y;
+
+        pixiObject.topHeight = item.topHeight;
+        pixiObject.rightWidth = item.rightWidth;
+        pixiObject.bottomHeight = item.bottomHeight;
+        pixiObject.leftWidth = item.leftWidth;
     }
 }
 
@@ -334,9 +364,60 @@ function createType(type: PixiType) {
             return new Container();
         case PixiType.SPRITE:
             return new Sprite(Texture.WHITE);
+        case PixiType.NINE_SLICE:
+            return new NineSlicePlane(Texture.WHITE);
         case PixiType.DISPLAY_OBJECT:
             throw new Error('Cannot create display object.');
     }
+}
+
+export type Prop<T extends Item[keyof Item]> = {
+    key: keyof Item;
+    control: ControlType;
+    controlOptions?: ControlOptions<T>;
+};
+
+const defaultProps: Prop<any>[] = [
+    { key: 'type', control: ControlType.STRING, controlOptions: { readonly: true } },
+    { key: 'id', control: ControlType.STRING, controlOptions: { readonly: true } },
+    { key: 'name', control: ControlType.STRING },
+    { key: 'position', control: ControlType.VECTOR2 },
+    { key: 'scale', control: ControlType.VECTOR2 },
+    { key: 'angle', control: ControlType.NUMBER },
+    { key: 'skew', control: ControlType.VECTOR2, controlOptions: { step: 0.1 } },
+    { key: 'pivot', control: ControlType.VECTOR2 },
+    { key: 'visible', control: ControlType.BOOLEAN },
+    { key: 'interactive', control: ControlType.BOOLEAN },
+    { key: 'buttonMode', control: ControlType.BOOLEAN },
+    { key: 'alpha', control: ControlType.NUMBER },
+];
+
+export const typePropMap: Record<PixiType, Prop<any>[]> = {
+    [PixiType.DISPLAY_OBJECT]: [],
+    [PixiType.CONTAINER]: [...defaultProps],
+    [PixiType.SPRITE]: [
+        ...defaultProps,
+        { control: ControlType.SEPARATOR } as unknown as Prop<any>,
+        { key: 'anchor', control: ControlType.VECTOR2, controlOptions: { step: 0.1 } },
+        { key: 'tint', control: ControlType.COLOR },
+        { key: 'texture', control: ControlType.TEXTURE },
+    ],
+    [PixiType.NINE_SLICE]: [
+        ...defaultProps,
+
+        { control: ControlType.SEPARATOR } as unknown as Prop<any>,
+        { key: 'tint', control: ControlType.COLOR },
+        { key: 'texture', control: ControlType.TEXTURE },
+        { key: 'size', control: ControlType.VECTOR2 },
+        { key: 'topHeight', control: ControlType.NUMBER },
+        { key: 'rightWidth', control: ControlType.NUMBER },
+        { key: 'bottomHeight', control: ControlType.NUMBER },
+        { key: 'leftWidth', control: ControlType.NUMBER },
+    ],
+};
+
+export function typeHasProp(type: PixiType, prop: Prop<any>) {
+    return typePropMap[type].includes(prop);
 }
 
 function Resize(viewport: Viewport) {
@@ -429,7 +510,6 @@ function DrawGrid(
     //     debug.lineTo(rect.x, rect.y);
     // }
 }
-
 
 function hasParent(displayObject: DisplayObject, target: DisplayObject) {
     let parent = displayObject;

@@ -1,15 +1,12 @@
-import { canHaveChildren, dispatch, EditorState, Item, PixiType, subscribe } from 'State';
+import { dispatch, subscribe } from 'State/State';
 import $ from 'jquery';
-import {
-    createItemAction,
-    deleteItemsAction,
-    duplicateItemAction,
-    moveItemsAction,
-    renameItemAction,
-    selectItemsAction,
-} from 'Actions';
+import { duplicateItemAction, moveItemsAction, renameItemAction, selectItemsAction } from 'State/Actions';
 import { createSelector } from 'reselect';
 import 'jstree';
+import { Item } from 'State/Item';
+import { EditorState } from 'State/EditorState';
+import { canHaveChildren } from 'State/CanHaveChildren';
+import { PixiType } from 'State/PixiType';
 
 function getJSTreeData(items: Item[]) {
     return items
@@ -28,7 +25,7 @@ function getJSTreeData(items: Item[]) {
                 data: { type: item.type },
                 type: item.type,
                 position: item.childIndex,
-            }
+            };
         });
 }
 
@@ -61,69 +58,69 @@ export function initTree(state: EditorState) {
         },
 
         // contextmenu: {
-            // select_node: false,
-            // items: (node: any) => ({
-            //     create: {
-            //         label: 'Create',
-            //         icon: 'bi bi-plus-square',
-            //         submenu: {
-            //             container: {
-            //                 label: 'Container',
-            //                 icon: 'bi bi-folder',
-            //                 action: () => {
-            //                     dispatch(
-            //                         createItemAction({
-            //                             parent: node.id,
-            //                             type: PixiType.CONTAINER,
-            //                         })
-            //                     );
-            //                 },
-            //             },
-            //             sprite: {
-            //                 label: 'Sprite',
-            //                 icon: 'bi bi-image',
-            //                 action: () => {
-            //                     dispatch(
-            //                         createItemAction({
-            //                             parent: node.id,
-            //                             type: PixiType.SPRITE,
-            //                         })
-            //                     );
-            //                 },
-            //             },
-            //         },
-            //         separator_after: true,
-            //     },
-            //     // copy: {
-            //     //     label: 'Copy',
-            //     //     icon: 'bi bi-clipboard',
-            //     // },
-            //     // cut: {
-            //     //     label: 'Cut',
-            //     //     icon: 'bi bi-scissors',
-            //     // },
-            //     // paste: {
-            //     //     label: 'Paste',
-            //     //     icon: 'bi bi-clipboard-check',
-            //     //     _disabled: () => false,
-            //     //     separator_after: true,
-            //     // },
-            //     rename: {
-            //         label: 'Rename',
-            //         icon: 'bi bi-pencil',
-            //         action: () => {
-            //             $(tree).jstree(true).edit(node);
-            //         },
-            //         separator_after: true,
-            //     },
-            //     remove: {
-            //         label: 'Delete',
-            //         icon: 'bi bi-trash',
-            //         action: () => {
-            //             dispatch(deleteItemsAction([node.id]));
-            //         },
-            //     },
-            // }),
+        // select_node: false,
+        // items: (node: any) => ({
+        //     create: {
+        //         label: 'Create',
+        //         icon: 'bi bi-plus-square',
+        //         submenu: {
+        //             container: {
+        //                 label: 'Container',
+        //                 icon: 'bi bi-folder',
+        //                 action: () => {
+        //                     dispatch(
+        //                         createItemAction({
+        //                             parent: node.id,
+        //                             type: PixiType.CONTAINER,
+        //                         })
+        //                     );
+        //                 },
+        //             },
+        //             sprite: {
+        //                 label: 'Sprite',
+        //                 icon: 'bi bi-image',
+        //                 action: () => {
+        //                     dispatch(
+        //                         createItemAction({
+        //                             parent: node.id,
+        //                             type: PixiType.SPRITE,
+        //                         })
+        //                     );
+        //                 },
+        //             },
+        //         },
+        //         separator_after: true,
+        //     },
+        //     // copy: {
+        //     //     label: 'Copy',
+        //     //     icon: 'bi bi-clipboard',
+        //     // },
+        //     // cut: {
+        //     //     label: 'Cut',
+        //     //     icon: 'bi bi-scissors',
+        //     // },
+        //     // paste: {
+        //     //     label: 'Paste',
+        //     //     icon: 'bi bi-clipboard-check',
+        //     //     _disabled: () => false,
+        //     //     separator_after: true,
+        //     // },
+        //     rename: {
+        //         label: 'Rename',
+        //         icon: 'bi bi-pencil',
+        //         action: () => {
+        //             $(tree).jstree(true).edit(node);
+        //         },
+        //         separator_after: true,
+        //     },
+        //     remove: {
+        //         label: 'Delete',
+        //         icon: 'bi bi-trash',
+        //         action: () => {
+        //             dispatch(deleteItemsAction([node.id]));
+        //         },
+        //     },
+        // }),
         // },
 
         search: {
@@ -137,6 +134,9 @@ export function initTree(state: EditorState) {
             },
             [PixiType.SPRITE]: {
                 icon: 'bi bi-image',
+            },
+            [PixiType.NINE_SLICE]: {
+                icon: 'bi bi-grid-3x3',
             },
         },
         conditionalselect: (node: any, event: any) => {

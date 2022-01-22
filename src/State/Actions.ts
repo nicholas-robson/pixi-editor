@@ -1,5 +1,5 @@
 import { createAction, DeepPartial } from '@reduxjs/toolkit';
-import { Item } from 'State';
+import { Item } from 'State/Item';
 
 export const createItemAction = createAction('CREATE_ITEM', (item: Partial<Item>) => ({
     payload: item,

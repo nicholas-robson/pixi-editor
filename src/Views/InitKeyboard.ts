@@ -1,5 +1,5 @@
-import { dispatch } from 'State';
-import { deleteAction, redoAction, undoAction } from 'Actions';
+import { dispatch } from 'State/State';
+import { deleteAction, redoAction, undoAction } from 'State/Actions';
 
 export function initKeyboard() {
     function KeyPress(e: any) {

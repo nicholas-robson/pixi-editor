@@ -1,5 +1,6 @@
-import { dispatch, PixiType } from 'State';
-import { createItemAction, deleteItemsAction } from 'Actions';
+import { dispatch} from 'State/State';
+import { createItemAction, deleteItemsAction } from 'State/Actions';
+import { PixiType } from 'State/PixiType';
 
 export function getContextMenu(itemIDs: string[]) {
     const parent = itemIDs.length === 1 ? itemIDs[0] : null;
@@ -30,6 +31,18 @@ export function getContextMenu(itemIDs: string[]) {
                             createItemAction({
                                 parent,
                                 type: PixiType.SPRITE,
+                            })
+                        );
+                    },
+                },
+                nineslice: {
+                    name: 'Nine-Slice',
+                    icon: ' bi bi-grid-3x3',
+                    callback: () => {
+                        dispatch(
+                            createItemAction({
+                                parent,
+                                type: PixiType.NINE_SLICE,
                             })
                         );
                     },
