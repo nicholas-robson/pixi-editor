@@ -29,7 +29,7 @@ export type TextStyle = {
     whiteSpace?: 'pre' | 'normal' | 'pre-line';
     wordWrap?: boolean;
     wordWrapWidth?: number;
-    fill?: number;
+    fill?: number | number[];
     fillGradientType?: number;
     fillGradientStops?: number[];
     align?: 'left' | 'center' | 'right';

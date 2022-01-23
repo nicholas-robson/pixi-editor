@@ -5,6 +5,9 @@ import { getItem } from 'State/GetItem';
 export function createItem(state: EditorState, item: Partial<Item>): { state: EditorState; id: string } {
     const newItem = getItem(item);
 
+    // Push to end of children.
+    newItem.childIndex = state.items.filter(i => i.parent === newItem.parent).length;
+
     return {
         state: {
             ...state,

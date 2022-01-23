@@ -11,6 +11,7 @@ import { getSeparatorControl } from 'Controls/GetSeparatorControl';
 import { getSidesControl } from 'Controls/GetSidesControl';
 import { getTextAreaControl } from 'Controls/GetTextAreaControl';
 import { getRadioButtonsControl } from 'Controls/GetRadioButtonsControl';
+import { getSelectControl } from 'Controls/GetSelectControl';
 
 export const controlTypeCreatorMap: Record<ControlType, (prop: Prop<any>) => Control> = {
     [ControlType.STRING]: getTextControl,
@@ -23,4 +24,5 @@ export const controlTypeCreatorMap: Record<ControlType, (prop: Prop<any>) => Con
     [ControlType.SEPARATOR]: getSeparatorControl,
     [ControlType.TEXTAREA]: getTextAreaControl,
     [ControlType.RADIOBUTTONS]: getRadioButtonsControl,
+    [ControlType.SELECT]: getSelectControl,
 };

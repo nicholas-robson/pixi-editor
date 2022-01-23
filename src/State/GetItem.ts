@@ -6,7 +6,7 @@ export function getItem(props: Partial<Item>): Item {
     props.id = props.id === undefined ? nanoid(10) : props.id;
     props.type = props.type === undefined ? PixiType.CONTAINER : props.type;
     props.name = props.name === undefined ? props.type + '_' + props.id : props.name;
-    return {
+    const item = {
         id: props.id,
         name: props.name,
         type: props.type,
@@ -45,11 +45,15 @@ export function getItem(props: Partial<Item>): Item {
         //
 
         // Text
-        text: '',
-        textStyle: {},
+        text: 'text',
+        textStyle: {
+            ...props.textStyle,
+        },
 
         childIndex: 0,
 
         ...props,
     };
+
+    return item;
 }

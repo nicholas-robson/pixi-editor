@@ -49,7 +49,7 @@ export function setTextureData(key: string, data: string) {
     base64Textures[key] = data;
 }
 
-export function getTextureData(key:string) {
+export function getTextureData(key: string) {
     return base64Textures[key];
 }
 
@@ -352,9 +352,35 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.anchor.set(item.anchor.x, item.anchor.y);
         //
         pixiObject.text = item.text;
-        pixiObject.style.fontSize = item.textStyle.fontSize;
-        pixiObject.style.fill = item.textStyle.fill;
-        pixiObject.style.align = item.textStyle.align;
+        pixiObject.style.fill = item.textStyle.fill ?? pixiObject.style.fill;
+        pixiObject.style.fontSize = item.textStyle.fontSize ?? pixiObject.style.fontSize;
+        pixiObject.style.fontFamily = item.textStyle.fontFamily ?? pixiObject.style.fontFamily;
+        pixiObject.style.align = item.textStyle.align ?? pixiObject.style.align;
+        pixiObject.style.fontStyle = item.textStyle.fontStyle ?? pixiObject.style.fontStyle;
+        pixiObject.style.fontVariant = item.textStyle.fontVariant ?? pixiObject.style.fontVariant;
+        pixiObject.style.fontWeight = item.textStyle.fontWeight ?? pixiObject.style.fontWeight;
+        pixiObject.style.lineJoin = item.textStyle.lineJoin ?? pixiObject.style.lineJoin;
+        pixiObject.style.whiteSpace = item.textStyle.whiteSpace ?? pixiObject.style.whiteSpace;
+        pixiObject.style.trim = item.textStyle.trim ?? pixiObject.style.trim;
+        pixiObject.style.wordWrap = item.textStyle.wordWrap ?? pixiObject.style.wordWrap;
+        pixiObject.style.wordWrapWidth = item.textStyle.wordWrapWidth ?? pixiObject.style.wordWrapWidth;
+        pixiObject.style.leading = item.textStyle.leading ?? pixiObject.style.leading;
+        pixiObject.style.lineHeight = item.textStyle.lineHeight ?? pixiObject.style.lineHeight;
+        pixiObject.style.miterLimit = item.textStyle.miterLimit ?? pixiObject.style.miterLimit;
+        pixiObject.style.padding = item.textStyle.padding ?? pixiObject.style.padding;
+        pixiObject.style.stroke = item.textStyle.stroke ?? pixiObject.style.stroke;
+        pixiObject.style.strokeThickness = item.textStyle.strokeThickness ?? pixiObject.style.strokeThickness;
+        pixiObject.style.fillGradientType = item.textStyle.fillGradientType ?? pixiObject.style.fillGradientType;
+        pixiObject.style.breakWords = item.textStyle.breakWords ?? pixiObject.style.breakWords;
+        pixiObject.style.dropShadow = item.textStyle.dropShadow ?? pixiObject.style.dropShadow;
+        pixiObject.style.dropShadowAlpha = item.textStyle.dropShadowAlpha ?? pixiObject.style.dropShadowAlpha;
+        pixiObject.style.dropShadowAngle = item.textStyle.dropShadowAngle ?? pixiObject.style.dropShadowAngle;
+        pixiObject.style.dropShadowBlur = item.textStyle.dropShadowBlur ?? pixiObject.style.dropShadowBlur;
+        pixiObject.style.dropShadowColor = item.textStyle.dropShadowColor ?? pixiObject.style.dropShadowColor;
+        pixiObject.style.dropShadowDistance = item.textStyle.dropShadowDistance ?? pixiObject.style.dropShadowDistance;
+        pixiObject.style.textBaseline = item.textStyle.textBaseline ?? pixiObject.style.textBaseline;
+        pixiObject.style.fillGradientStops = item.textStyle.fillGradientStops ?? pixiObject.style.fillGradientStops;
+
     } else if (pixiObject instanceof Sprite) {
         setTexture(pixiObject, item.texture);
         pixiObject.tint = item.tint;
@@ -377,7 +403,6 @@ async function setTexture(pixiObject: Sprite | NineSlicePlane, texturePath: stri
     pixiObject.texture = Texture.WHITE;
 
     if (texturePath === null) return;
-
 
     try {
         const texture = await Texture.fromURL(base64Textures[texturePath]);
@@ -420,12 +445,7 @@ function createType(type: PixiType) {
         case PixiType.NINE_SLICE:
             return new NineSlicePlane(Texture.WHITE);
         case PixiType.TEXT:
-            return new Text('This is a PixiJS text', {
-                fontFamily: 'Arial',
-                fontSize: 24,
-                fill: 0xff1010,
-                align: 'center',
-            });
+            return new Text('text');
         case PixiType.DISPLAY_OBJECT:
             throw new Error('Cannot create display object.');
     }

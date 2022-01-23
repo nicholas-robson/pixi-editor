@@ -9,4 +9,5 @@ export enum ControlType {
     SEPARATOR = 'separator',
     TEXTAREA = 'textarea',
     RADIOBUTTONS = 'radiobuttons',
+    SELECT = 'select',
 }

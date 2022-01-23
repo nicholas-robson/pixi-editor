@@ -8,14 +8,6 @@ main {
     overflow-y: hidden;
 }
 
-#canvas-container.grab {
-cursor: -webkit-grab; cursor: grab;
-}
-
-#canvas-container.grabbing {
-cursor: -webkit-grabbing; cursor: grabbing;
-}
-
 #tree-container {
     background: #191d20;
     border-radius: 5px;
@@ -30,14 +22,18 @@ cursor: -webkit-grabbing; cursor: grabbing;
     bottom: 0;
 }
 
+#right-panel {
+    overflow: auto;
+}
+
 #right-panel .row {
     margin-bottom: 4px;
 }
 
-#right-panel .form-control-sm {
+#right-panel .form-control-sm, #right-panel .form-select-sm {
     padding: 2px 8px;
     min-height: inherit;
-    background: #181b1e;
+    background-color: #181b1e;
     border: none;
     color:white;
 }
@@ -65,6 +61,11 @@ cursor: -webkit-grabbing; cursor: grabbing;
 
 #right-panel .col-form-label-sm {
     padding: 2px 8px;
+}
+
+#right-panel .col-form-label {
+    color: #c6d0db;
+    font-size: 12;
 }
 
 .gutter {
