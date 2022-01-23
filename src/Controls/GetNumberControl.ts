@@ -34,11 +34,11 @@ export function getNumberControl(prop: Prop<number>): Control {
         element,
         onAttach: () => {
             $(`#${prop.id}`).on('change', () => {
-                const value = $(`#${prop.id}`).val();
+                const value = $(`#${prop.id}`).val() as string;
 
                 if (!isNumeric(value)) return;
 
-                onChange(prop, value);
+                onChange(prop, parseFloat(value));
             });
         },
         selector,

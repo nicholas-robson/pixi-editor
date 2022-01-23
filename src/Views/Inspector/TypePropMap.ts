@@ -47,16 +47,21 @@ export const typePropMap: Record<PixiType, Prop<any>[]> = {
         ...defaultProps,
         { id: 'anchor', control: ControlType.VECTOR2, controlOptions: { step: 0.1 } },
         tint,
-        texture,
         { id: 'text', control: ControlType.TEXTAREA },
-        { id: 'style', control: ControlType.STRING },
+        {
+            id: 'fontsize',
+            control: ControlType.NUMBER,
+            controlOptions: { label: 'Font Size' },
+            valueToItem: (value) => ({ textStyle: { fontSize: value } }),
+            itemToValue: (item) => item?.textStyle.fontSize ?? 12,
+        },
         {
             id: 'align',
             control: ControlType.RADIOBUTTONS,
-            inputOptions : [
-                { icon : "bi-text-left", value: 'left' },
-                { icon : "bi-text-center", value: 'center' },
-                { icon : "bi-text-right", value: 'right' }
+            inputOptions: [
+                { icon: 'bi-text-left', value: 'left' },
+                { icon: 'bi-text-center', value: 'center' },
+                { icon: 'bi-text-right', value: 'right' },
             ],
             valueToItem: (value) => ({ textStyle: { align: value } }),
             itemToValue: (item) => item?.textStyle.align ?? 'left',

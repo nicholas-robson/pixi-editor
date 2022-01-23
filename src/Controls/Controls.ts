@@ -23,7 +23,7 @@ export function getSelected(state: EditorState) {
     return selected[0];
 }
 
-export function isNumeric(inputString: unknown): inputString is number {
+export function isNumeric(inputString: unknown) {
     if (typeof inputString !== 'string') return false;
     return !isNaN(inputString as unknown as number) && !isNaN(parseFloat(inputString));
 }

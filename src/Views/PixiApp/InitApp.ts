@@ -26,13 +26,13 @@ import { PixiType } from 'State/PixiType';
 
 type PixiObject = Container & { id: string };
 
-let viewport:Viewport;
+let viewport: Viewport;
 const pixiObjects: PixiObject[] = [];
 const canvas = document.getElementById('canvas-container') as HTMLCanvasElement;
 
 export function toLocal(x: number, y: number, parent: string | null) {
     if (parent !== null) {
-        const pixiParent = pixiObjects.find(p => p.id === parent);
+        const pixiParent = pixiObjects.find((p) => p.id === parent);
         if (pixiParent === undefined) return new Point(0, 0);
 
         // console.log(pixiParent);
@@ -41,6 +41,16 @@ export function toLocal(x: number, y: number, parent: string | null) {
     }
 
     return viewport.toLocal(new Point(x, y));
+}
+
+const base64Textures: Record<string, string> = {};
+
+export function setTextureData(key: string, data: string) {
+    base64Textures[key] = data;
+}
+
+export function getTextureData(key:string) {
+    return base64Textures[key];
 }
 
 export function initApp(state: EditorState) {
@@ -368,8 +378,9 @@ async function setTexture(pixiObject: Sprite | NineSlicePlane, texturePath: stri
 
     if (texturePath === null) return;
 
+
     try {
-        const texture = await Texture.fromURL(`resource/${texturePath}`);
+        const texture = await Texture.fromURL(base64Textures[texturePath]);
         pixiObject.texture = texture;
     } catch (e) {}
 }
