@@ -278,7 +278,7 @@ export function initApp(state: EditorState) {
             const removed = pixiIDs.filter((id) => !state.items.map((item) => item.id).includes(id));
             removed.forEach((id) => {
                 const obj = pixiObjects.find((obj) => obj.id === id);
-                if (obj !== undefined) {
+                if (obj !== undefined && obj.destroyed === false) {
                     obj.destroy({ children: true });
                     pixiObjects.splice(pixiObjects.indexOf(obj), 1);
                 }

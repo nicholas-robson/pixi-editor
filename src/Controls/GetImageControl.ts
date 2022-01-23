@@ -11,7 +11,7 @@ export function getImageControl(prop: Prop<string>): Control {
 <div id='control-${prop.id}' class='row'>
     <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
-        <label for='${prop.id}'><img class='img-thumbnail d-block' width='64' height='64'  alt='image' id='image-${
+        <label for='${prop.id}'><img class='img-thumbnail d-block' width='64' height='64' id='image-${
         prop.id
     }'/></label>
         <input type="file" class='form-control form-control-sm d-none' id='${prop.id}' accept=".jpg, .jpeg, .png">

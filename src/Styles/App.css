@@ -30,6 +30,20 @@ main {
     margin-bottom: 4px;
 }
 
+#right-panel .img-thumbnail {
+    padding: 0;
+    background-color: #181b1e;
+    border-color: transparent;
+    border-radius: .25rem;
+    max-width: 100%;
+    height: auto;
+}
+
+/*#right-panel img:not([src]) {*/
+/*    border: none;*/
+/*    visibility: hidden;*/
+/*}*/
+
 #right-panel .form-control-sm, #right-panel .form-select-sm {
     padding: 2px 8px;
     min-height: inherit;
