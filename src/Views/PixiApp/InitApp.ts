@@ -7,6 +7,7 @@ import {
     InteractionEvent,
     NineSlicePlane,
     ParticleRenderer,
+    Point,
     Renderer,
     Sprite,
     Text,
@@ -17,7 +18,6 @@ import { createSelector } from 'reselect';
 import { Viewport } from 'pixi-viewport';
 import { drawGrid } from 'Views/PixiApp/Grid';
 import $ from 'jquery';
-import { getContextMenu } from 'Views/ContextMenu';
 import { deselectAllAction, selectItemsAction, updateItemsAction } from 'State/Actions';
 import { Transformer } from '@pixi-essentials/transformer';
 import { Item } from 'State/Item';
@@ -26,32 +26,29 @@ import { PixiType } from 'State/PixiType';
 
 type PixiObject = Container & { id: string };
 
+let viewport:Viewport;
+const pixiObjects: PixiObject[] = [];
+const canvas = document.getElementById('canvas-container') as HTMLCanvasElement;
+
+export function toLocal(x: number, y: number, parent: string | null) {
+    if (parent !== null) {
+        const pixiParent = pixiObjects.find(p => p.id === parent);
+        if (pixiParent === undefined) return new Point(0, 0);
+
+        // console.log(pixiParent);
+
+        return pixiParent.toLocal(new Point(x, y));
+    }
+
+    return viewport.toLocal(new Point(x, y));
+}
+
 export function initApp(state: EditorState) {
     Renderer.registerPlugin('particle', ParticleRenderer);
     Renderer.registerPlugin('interaction', InteractionManager);
 
     const canvas = document.getElementById('canvas-container') as HTMLCanvasElement;
     if (canvas === null) throw new Error('Canvas not found!');
-
-    $.contextMenu({
-        selector: '#canvas-container, .jstree-node',
-        build: ($trigger, e) => {
-            const isTreeNode = $($trigger).hasClass('jstree-node');
-            if (isTreeNode) {
-                const id = $($trigger).attr('id') as string;
-                dispatch(selectItemsAction([id], true));
-            }
-
-            const itemIDs = getState()
-                .items.filter((item) => item.selected)
-                .map((item) => item.id);
-
-            return {
-                items: getContextMenu(itemIDs),
-            };
-        },
-        zIndex: 750,
-    });
 
     const app = new Application({
         view: canvas,
@@ -74,7 +71,7 @@ export function initApp(state: EditorState) {
     let canvasWidth = 800;
     let canvasHeight = 600;
 
-    const viewport = new Viewport({
+    viewport = new Viewport({
         screenWidth: window.innerWidth,
         screenHeight: window.innerHeight,
         worldWidth: window.innerWidth,
@@ -252,8 +249,6 @@ export function initApp(state: EditorState) {
 
     //console.log(app.renderer.plugins.interaction);
     //app.renderer.plugins.interaction.hitTest();
-
-    const pixiObjects: PixiObject[] = [];
 
     const appSelector = createSelector(
         (state: EditorState) => state,

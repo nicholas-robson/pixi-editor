@@ -1,6 +1,45 @@
-import { dispatch} from 'State/State';
-import { createItemAction, deleteItemsAction } from 'State/Actions';
+import { dispatch, getState } from 'State/State';
+import { createItemAction, deleteItemsAction, selectItemsAction } from 'State/Actions';
 import { PixiType } from 'State/PixiType';
+import $ from 'jquery';
+import { toLocal } from 'Views/PixiApp/InitApp';
+
+let contextMenuPosition = { x: 0, y: 0 };
+
+export function initContextMenu() {
+    $.contextMenu({
+        selector: '#canvas-container, .jstree-node',
+        build: ($trigger, e: any) => {
+            const isTreeNode = $($trigger).hasClass('jstree-node');
+            if (isTreeNode) {
+                const id = $($trigger).attr('id') as string;
+                dispatch(selectItemsAction([id], true));
+            }
+
+            const itemIDs = getState()
+                .items.filter((item) => item.selected)
+                .map((item) => item.id);
+
+            return {
+                items: getContextMenu(itemIDs),
+            };
+        },
+        position: (opt: any, x, y) => {
+            opt.$menu.css({ top: y, left: x });
+
+            // console.log(opt);
+            // console.log(x, y);
+
+            // var parentOffset = $(this).parent().offset();
+            // //or $(this).offset(); if you really just want the current element's offset
+            // var relX = e.pageX - parentOffset.left;
+            // var relY = e.pageY - parentOffset.top;
+
+            contextMenuPosition = { x, y };
+        },
+        zIndex: 750,
+    });
+}
 
 export function getContextMenu(itemIDs: string[]) {
     const parent = itemIDs.length === 1 ? itemIDs[0] : null;
@@ -15,11 +54,16 @@ export function getContextMenu(itemIDs: string[]) {
                     name: 'Container',
                     icon: ' bi bi-folder',
                     callback: () => {
+                        const point = toLocal(contextMenuPosition.x, contextMenuPosition.y, parent);
                         dispatch(
-                            createItemAction({
-                                parent,
-                                type: PixiType.CONTAINER,
-                            })
+                            createItemAction(
+                                {
+                                    parent,
+                                    type: PixiType.CONTAINER,
+                                    position: { x: point.x, y: point.y },
+                                },
+                                true
+                            )
                         );
                     },
                 },
@@ -27,11 +71,16 @@ export function getContextMenu(itemIDs: string[]) {
                     name: 'Sprite',
                     icon: ' bi bi-image',
                     callback: () => {
+                        const point = toLocal(contextMenuPosition.x, contextMenuPosition.y, parent);
                         dispatch(
-                            createItemAction({
-                                parent,
-                                type: PixiType.SPRITE,
-                            })
+                            createItemAction(
+                                {
+                                    parent,
+                                    type: PixiType.SPRITE,
+                                    position: { x: point.x, y: point.y },
+                                },
+                                true
+                            )
                         );
                     },
                 },
@@ -39,11 +88,16 @@ export function getContextMenu(itemIDs: string[]) {
                     name: 'Text',
                     icon: ' bi bi-textarea-t',
                     callback: () => {
+                        const point = toLocal(contextMenuPosition.x, contextMenuPosition.y, parent);
                         dispatch(
-                            createItemAction({
-                                parent,
-                                type: PixiType.TEXT,
-                            })
+                            createItemAction(
+                                {
+                                    parent,
+                                    type: PixiType.TEXT,
+                                    position: { x: point.x, y: point.y },
+                                },
+                                true
+                            )
                         );
                     },
                 },
@@ -51,11 +105,16 @@ export function getContextMenu(itemIDs: string[]) {
                     name: 'Nine-Slice',
                     icon: ' bi bi-grid-3x3',
                     callback: () => {
+                        const point = toLocal(contextMenuPosition.x, contextMenuPosition.y, parent);
                         dispatch(
-                            createItemAction({
-                                parent,
-                                type: PixiType.NINE_SLICE,
-                            })
+                            createItemAction(
+                                {
+                                    parent,
+                                    type: PixiType.NINE_SLICE,
+                                    position: { x: point.x, y: point.y },
+                                },
+                                true
+                            )
                         );
                     },
                 },

@@ -8,6 +8,14 @@ main {
     overflow-y: hidden;
 }
 
+#canvas-container.grab {
+cursor: -webkit-grab; cursor: grab;
+}
+
+#canvas-container.grabbing {
+cursor: -webkit-grabbing; cursor: grabbing;
+}
+
 #tree-container {
     background: #191d20;
     border-radius: 5px;

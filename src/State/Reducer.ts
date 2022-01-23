@@ -125,7 +125,15 @@ export function rootReducer(state: EditorState, action: Action): EditorState {
     }
 
     if (createItemAction.match(action)) {
-        return createItem(state, action.payload);
+        const result = createItem(state, action.payload.item);
+
+        state = result.state;
+
+        if (action.payload.select) {
+            state = selectItems(state, [result.id], true);
+        }
+
+        return state;
     }
 
     return state;
