@@ -1,17 +1,17 @@
-import { subscribe } from 'State/State';
 import { getLabel } from 'Controls/GetLabel';
+import { subscribe } from 'State/State';
 import $ from 'jquery';
-import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
+import { Control, getSelector, onChange } from 'Controls/Controls';
 import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 
-export function getNumberControl(prop: Prop<number>): Control {
-    const element = $(`
+export function getTextControl(prop: Prop<string>): Control {
+    const element = $(` 
 <div id='control-${prop.id}' class='row'>
-    <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
+    <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm'>${getLabel(prop)}</label>
     <div class='col-sm-8'>
-        <input type='number' class='form-control form-control-sm' id='${prop.id}'
-            ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>
+        <input type='text' class='form-control form-control-sm' id='${prop.id}'
+            ${prop.controlOptions?.readonly ? 'readonly' : ''}>
     </div>
 </div>
     `);
@@ -34,10 +34,7 @@ export function getNumberControl(prop: Prop<number>): Control {
         element,
         onAttach: () => {
             $(`#${prop.id}`).on('change', () => {
-                const value = $(`#${prop.id}`).val();
-
-                if (!isNumeric(value)) return;
-
+                const value = $(`#${prop.id}`).val() as string;
                 onChange(prop, value);
             });
         },

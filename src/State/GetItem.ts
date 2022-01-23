@@ -31,7 +31,7 @@ export function getItem(props: Partial<Item>): Item {
 
         // Sprite
         anchor: { x: 0, y: 0 },
-        texture: 'string',
+        texture: null,
         tint: 0xffffff,
         //
 

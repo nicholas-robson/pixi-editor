@@ -8,6 +8,11 @@ export function updateItem(state: EditorState, id: string, partialItem: Partial<
         items: state.items.map((item) => {
             if (item.id !== id) return item;
 
+            partialItem.textStyle = {
+                ...item.textStyle,
+                ...partialItem.textStyle,
+            };
+
             item = {
                 ...item,
                 ...partialItem,

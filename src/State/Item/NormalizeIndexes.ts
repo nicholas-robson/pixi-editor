@@ -4,7 +4,7 @@ import { EditorState } from 'State/EditorState';
  * Adjust `childIndex`s so they start from 0 and increment by 1 for distinct `parent`s.
  * @param state
  */
-export function normalizeIndexes(state: EditorState) {
+export function normalizeIndexes(state: EditorState): EditorState {
     return {
         ...state,
         items: [...state.items].map((item) => {

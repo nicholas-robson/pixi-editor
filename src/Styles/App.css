@@ -16,10 +16,47 @@ main {
 
 #canvas-container {
     position: absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#right-panel .row {
+    margin-bottom: 4px;
+}
+
+#right-panel .form-control-sm {
+    padding: 2px 8px;
+    min-height: inherit;
+    background: #181b1e;
+    border: none;
+    color:white;
+}
+
+#right-panel .form-control-sm[type='color'] {
+    /*min-height: calc(1.5em + .5rem + 2px);*/
+    padding: 4px 8px;
+    border: none;
+    height:100%;
+    /*border-radius: 5px;*/
+    /*width: auto;*/
+    /*aspect-ratio: 1;*/
+}
+
+#right-panel .form-control-sm[type='color']::-webkit-color-swatch-wrapper,
+#right-panel .form-control-sm[type='color']::-moz-color-swatch-wrapper {
+    border: none;
+    padding: 0;
+}
+#right-panel .form-control-sm[type='color']::-webkit-color-swatch,
+#right-panel .form-control-sm[type='color']::-moz-color-swatch {
+    border: none;
+    border-radius: 5px;
+}
+
+#right-panel .col-form-label-sm {
+    padding: 2px 8px;
 }
 
 .gutter {
@@ -27,5 +64,5 @@ main {
     z-index: 550;
 }
 .gutter-horizontal {
-    cursor:col-resize;
+    cursor: col-resize;
 }

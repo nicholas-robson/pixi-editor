@@ -19,19 +19,19 @@ export function getSidesControl(prop: Prop<Sides>): Control {
     const bottomID = `${prop.id}-bottom`;
 
     const topInput =
-        $(`<input type='number' class='form-control form-control-sm bg-transparent text-white' id='${topID}'
+        $(`<input type='number' class='form-control form-control-sm' id='${topID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
     const rightInput =
-        $(`<input type='number' class='form-control form-control-sm bg-transparent text-white' id='${rightID}'
+        $(`<input type='number' class='form-control form-control-sm' id='${rightID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
     const leftInput =
-        $(`<input type='number' class='form-control form-control-sm bg-transparent text-white' id='${leftID}'
+        $(`<input type='number' class='form-control form-control-sm' id='${leftID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
     const bottomInput =
-        $(`<input type='number' class='form-control form-control-sm bg-transparent text-white' id='${bottomID}'
+        $(`<input type='number' class='form-control form-control-sm' id='${bottomID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
     const element = $(`

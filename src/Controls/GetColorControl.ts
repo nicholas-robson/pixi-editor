@@ -10,9 +10,10 @@ export function getColorControl(prop: Prop<number>): Control {
 <div id='control-${prop.id}' class='row'>
     <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
-        <input type='color' class='form-control form-control-sm bg-transparent text-white' id='${
+<!--        <label for='${prop.id}' class='float-start'><i class='bi bi-palette'></i></label>-->
+        <input type='color' class='form-control form-control-sm' id='${
             prop.id
-        }' placeholder='#563d7c'>
+        }' placeholder='#563d7c' value='#563d7c'>
     </div>
 </div>
     `);

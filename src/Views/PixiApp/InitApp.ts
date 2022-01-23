@@ -259,20 +259,18 @@ export function initApp(state: EditorState) {
         (state: EditorState) => state,
         (state) => {
             const pixiIDs = pixiObjects.map((p) => p.id);
-            const added = state.items.filter((item) => !pixiIDs.includes(item.id));
 
+            const added = state.items.filter((item) => !pixiIDs.includes(item.id));
             added.forEach((item) => {
                 const newPixiObject: PixiObject = createType(item.type) as unknown as PixiObject;
                 newPixiObject.id = item.id;
                 newPixiObject.interactive = true;
 
                 updatePixiObject(newPixiObject, item, pixiObjects, scene);
-
                 pixiObjects.push(newPixiObject);
             });
 
             const removed = pixiIDs.filter((id) => !state.items.map((item) => item.id).includes(id));
-
             removed.forEach((id) => {
                 const obj = pixiObjects.find((obj) => obj.id === id);
                 if (obj !== undefined) {
@@ -285,6 +283,22 @@ export function initApp(state: EditorState) {
                 const obj = pixiObjects.find((p) => p.id === item.id);
                 if (obj === undefined) return;
                 updatePixiObject(obj, item, pixiObjects, scene);
+            });
+
+            // Fix child ordering after updates with normalized indexes.
+            state.items.forEach((item) => {
+                const obj = pixiObjects.find((p) => p.id === item.id);
+                if (obj === undefined) return;
+                let newParent: Container = scene;
+                if (item.parent !== null) {
+                    const parent = pixiObjects.find((p) => p.id === item.parent);
+                    if (parent === undefined) throw new Error('Parent pixi object not found!');
+                    newParent = parent;
+                }
+
+                if (newParent.getChildIndex(obj) !== item.childIndex) {
+                    newParent.setChildIndex(obj, item.childIndex);
+                }
             });
 
             const selected = state.items
@@ -321,6 +335,7 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
     }
 
     pixiObject.position.set(item.position.x, item.position.y);
+    pixiObject.pivot.set(item.pivot.x, item.pivot.y);
     pixiObject.scale.set(item.scale.x, item.scale.y);
     pixiObject.skew.set(item.skew.x, item.skew.y);
     pixiObject.angle = item.angle;
@@ -334,6 +349,7 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.text = item.text;
         pixiObject.style.fontSize = item.textStyle.fontSize;
         pixiObject.style.fill = item.textStyle.fill;
+        pixiObject.style.align = item.textStyle.align;
     } else if (pixiObject instanceof Sprite) {
         setTexture(pixiObject, item.texture);
         pixiObject.tint = item.tint;
@@ -352,8 +368,11 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
     }
 }
 
-async function setTexture(pixiObject: Sprite | NineSlicePlane, texturePath: string) {
+async function setTexture(pixiObject: Sprite | NineSlicePlane, texturePath: string | null) {
     pixiObject.texture = Texture.WHITE;
+
+    if (texturePath === null) return;
+
     try {
         const texture = await Texture.fromURL(`resource/${texturePath}`);
         pixiObject.texture = texture;

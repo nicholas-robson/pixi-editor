@@ -8,7 +8,7 @@ import { Prop } from 'Views/Inspector/Prop';
 export function getBooleanControl(prop: Prop<boolean>): Control {
     const element = $(`
 <div id='control-${prop.id}' class='row'>
-  <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
+  <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm'>${getLabel(prop)}</label>
   <div class='col-sm-8'>
     <div class='mt-1 form-check form-switch'>
       <input class='form-check-input' type='checkbox' role='switch' id='${prop.id}'>

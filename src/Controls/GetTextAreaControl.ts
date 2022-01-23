@@ -5,12 +5,12 @@ import { Control, getSelector, onChange } from 'Controls/Controls';
 import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 
-export function getStringControl(prop: Prop<string>): Control {
+export function getTextAreaControl(prop: Prop<string>): Control {
     const element = $(` 
 <div id='control-${prop.id}' class='row'>
     <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm'>${getLabel(prop)}</label>
     <div class='col-sm-8'>
-        <input type='text' class='form-control form-control-sm bg-transparent text-white' id='${prop.id}'
+        <textarea class='form-control form-control-sm' id='${prop.id}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''}>
     </div>
 </div>

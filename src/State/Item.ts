@@ -25,7 +25,7 @@ export type Item = {
     // Sprite
     tint: number;
     anchor: Vector2;
-    texture: string;
+    texture: string | null;
     //
 
     // Nine Slice

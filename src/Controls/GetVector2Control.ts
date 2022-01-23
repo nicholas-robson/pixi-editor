@@ -16,9 +16,9 @@ export function getVector2Control(prop: Prop<Vector2>): Control {
     <label for='${xID}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
     <div class='input-group input-group-sm'>
-        <input type='number' class='form-control form-control-sm bg-transparent text-white' id='${xID}'
+        <input type='number' class='form-control form-control-sm' id='${xID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>
-        <input type='number' class='form-control form-control-sm bg-transparent text-white' id='${yID}' 
+        <input type='number' class='form-control form-control-sm' id='${yID}' 
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>
     </div>
     </div>

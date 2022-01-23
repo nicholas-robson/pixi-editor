@@ -33,7 +33,7 @@ export function rootReducer(state: EditorState, action: Action): EditorState {
     if (moveItemsAction.match(action)) {
         state = pushUndoState(state);
 
-        state = moveItems(state, action.payload, true);
+        state = moveItems(state, action.payload);
         return normalizeIndexes(state);
     }
 
@@ -130,4 +130,3 @@ export function rootReducer(state: EditorState, action: Action): EditorState {
 
     return state;
 }
-
