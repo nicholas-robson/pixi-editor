@@ -1,5 +1,6 @@
 import { Vector2 } from 'Utility/Vector2';
 import { PixiType } from 'State/PixiType';
+import { TextStyle } from 'State/TextStyle';
 
 export type Item = {
     id: string;
@@ -34,6 +35,12 @@ export type Item = {
     rightWidth: number;
     bottomHeight: number;
     leftWidth: number;
+    //
+
+    // Text
+    text: string;
+    textStyle: TextStyle;
+    //
 
     childIndex: number;
 

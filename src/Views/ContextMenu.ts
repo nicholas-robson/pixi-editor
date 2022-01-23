@@ -35,6 +35,18 @@ export function getContextMenu(itemIDs: string[]) {
                         );
                     },
                 },
+                text: {
+                    name: 'Text',
+                    icon: ' bi bi-textarea-t',
+                    callback: () => {
+                        dispatch(
+                            createItemAction({
+                                parent,
+                                type: PixiType.TEXT,
+                            })
+                        );
+                    },
+                },
                 nineslice: {
                     name: 'Nine-Slice',
                     icon: ' bi bi-grid-3x3',

@@ -44,6 +44,10 @@ export function getItem(props: Partial<Item>): Item {
         leftWidth: 0,
         //
 
+        // Text
+        text: '',
+        textStyle: {},
+
         childIndex: 0,
 
         ...props,

@@ -9,6 +9,7 @@ import {
     ParticleRenderer,
     Renderer,
     Sprite,
+    Text,
     Texture,
 } from 'pixi.js';
 import { InteractionManager } from '@pixi/interaction';
@@ -326,14 +327,18 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
     pixiObject.alpha = item.alpha;
     pixiObject.visible = item.visible;
 
-    if (pixiObject instanceof Sprite) {
-        setTexture(pixiObject, item.texture);
-
+    if (pixiObject instanceof Text) {
         pixiObject.tint = item.tint;
         pixiObject.anchor.set(item.anchor.x, item.anchor.y);
-    }
-
-    if (pixiObject instanceof NineSlicePlane) {
+        //
+        pixiObject.text = item.text;
+        pixiObject.style.fontSize = item.textStyle.fontSize;
+        pixiObject.style.fill = item.textStyle.fill;
+    } else if (pixiObject instanceof Sprite) {
+        setTexture(pixiObject, item.texture);
+        pixiObject.tint = item.tint;
+        pixiObject.anchor.set(item.anchor.x, item.anchor.y);
+    } else if (pixiObject instanceof NineSlicePlane) {
         setTexture(pixiObject, item.texture);
         pixiObject.tint = item.tint;
 
@@ -344,13 +349,6 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.rightWidth = item.rightWidth;
         pixiObject.bottomHeight = item.bottomHeight;
         pixiObject.leftWidth = item.leftWidth;
-
-        pixiObject.updateHorizontalVertices();
-        pixiObject.updateVerticalVertices();
-        pixiObject.textureUpdated();
-        pixiObject.calculateBounds();
-        pixiObject.calculateUvs();
-        pixiObject.calculateVertices();
     }
 }
 
@@ -396,6 +394,13 @@ function createType(type: PixiType) {
             return new Sprite(Texture.WHITE);
         case PixiType.NINE_SLICE:
             return new NineSlicePlane(Texture.WHITE);
+        case PixiType.TEXT:
+            return new Text('This is a PixiJS text', {
+                fontFamily: 'Arial',
+                fontSize: 24,
+                fill: 0xff1010,
+                align: 'center',
+            });
         case PixiType.DISPLAY_OBJECT:
             throw new Error('Cannot create display object.');
     }

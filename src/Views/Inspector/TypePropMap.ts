@@ -41,6 +41,14 @@ export const typePropMap: Record<PixiType, Prop<any>[]> = {
                 rightWidth: value.right,
                 bottomHeight: value.bottom,
             }),
-        }
+        },
+    ],
+    [PixiType.TEXT]: [
+        ...defaultProps,
+        { id: 'anchor', control: ControlType.VECTOR2, controlOptions: { step: 0.1 } },
+        tint,
+        texture,
+        { id: 'text', control: ControlType.STRING },
+        { id: 'style', control: ControlType.STRING },
     ],
 };

@@ -138,6 +138,9 @@ export function initTree(state: EditorState) {
             [PixiType.NINE_SLICE]: {
                 icon: 'bi bi-grid-3x3',
             },
+            [PixiType.TEXT]: {
+                icon: 'bi bi-textarea-t',
+            },
         },
         conditionalselect: (node: any, event: any) => {
             return true;

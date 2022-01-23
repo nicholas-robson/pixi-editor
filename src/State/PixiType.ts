@@ -3,4 +3,5 @@ export enum PixiType {
     CONTAINER = 'Container',
     SPRITE = 'Sprite',
     NINE_SLICE = 'NiceSlice',
+    TEXT = 'Text',
 }
