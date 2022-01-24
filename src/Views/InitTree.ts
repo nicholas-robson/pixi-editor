@@ -1,6 +1,12 @@
 import { dispatch, subscribe } from 'State/State';
 import $ from 'jquery';
-import { duplicateItemAction, moveItemsAction, renameItemAction, selectItemsAction } from 'State/Actions';
+import {
+    duplicateItemAction,
+    focusItemAction,
+    moveItemsAction,
+    renameItemAction,
+    selectItemsAction,
+} from 'State/Actions';
 import { createSelector } from 'reselect';
 import 'jstree';
 import { Item } from 'State/Item';
@@ -243,6 +249,15 @@ export function initTree(state: EditorState) {
                         // Do not call `rename_node` or it will dispatch a rename action and disrupt undo stack.
                     }
                 });
+
+                // Ugly but it works...
+                $('.jstree-node')
+                    .off('dblclick')
+                    .on('dblclick', (e) => {
+                        const itemID = $(e.currentTarget).attr('id');
+                        if (typeof itemID !== 'string') return;
+                        dispatch(focusItemAction(itemID));
+                    });
             }
         )
     );

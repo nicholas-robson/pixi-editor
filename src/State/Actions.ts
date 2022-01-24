@@ -1,12 +1,12 @@
-import { createAction, DeepPartial } from '@reduxjs/toolkit';
+import { createAction } from '@reduxjs/toolkit';
 import { Item } from 'State/Item';
 
-export const createItemAction = createAction('CREATE_ITEM', (item: Partial<Item>, select:boolean) => ({
-    payload: {item, select},
+export const createItemAction = createAction('CREATE_ITEM', (item: Partial<Item>, select: boolean) => ({
+    payload: { item, select },
 }));
 
-export const updateItemAction = createAction('UPDATE_ITEM', (id:string, item: Partial<Item>) => ({
-    payload: {id, item},
+export const updateItemAction = createAction('UPDATE_ITEM', (id: string, item: Partial<Item>) => ({
+    payload: { id, item },
 }));
 
 export const updateItemsAction = createAction('UPDATE_ITEMS', (items: Item[]) => ({
@@ -49,3 +49,7 @@ export const undoAction = createAction('UNDO');
 export const redoAction = createAction('REDO');
 
 export const deleteAction = createAction('DELETE');
+
+export const focusItemAction = createAction('FOCUS_ITEM', (id: string) => ({
+    payload: id,
+}));

@@ -6,7 +6,7 @@ import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 
 export function getRadioButtonsControl(prop: Prop<string>): Control {
-    const inputs = $('<div class="btn-group btn-group-sm" role="group"></div>');
+    const inputs = $('<div class="btn-group btn-group-sm" style="margin-left:1px /* bootstrap fix */" role="group"></div>');
     prop.inputOptions?.forEach((option) => {
         inputs.append(`
             <input type="radio" class="btn-check" name="options-${prop.id}" id="option-${prop.id}-${option.value}" 
@@ -14,6 +14,7 @@ export function getRadioButtonsControl(prop: Prop<string>): Control {
             <label class="btn btn-outline-light" for="option-${prop.id}-${option.value}"><i class='bi ${option.icon}'></i>${
             option.label ?? ''
         }</label>
+            
         `);
     });
 

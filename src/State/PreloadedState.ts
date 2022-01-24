@@ -6,6 +6,7 @@ import { normalizeIndexes } from 'State/Item/NormalizeIndexes';
 export const preloadedState: EditorState = normalizeIndexes({
     undo: [],
     redo: [],
+    focus: { itemID: null },
     items: [
         // getItem({
         //     id: 'root_1',
@@ -46,9 +47,9 @@ export const preloadedState: EditorState = normalizeIndexes({
             text: 'Some nice text',
             textStyle: {
                 fill: 0xffffff,
-                fontSize: 24
+                fontSize: 24,
             },
-            position: { x: 100 , y: 100 },
+            position: { x: 100, y: 100 },
         }),
     ],
 });

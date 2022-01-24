@@ -5,4 +5,5 @@ export type EditorState = {
     undo: UndoState[];
     redo: UndoState[];
     items: Item[];
+    focus: { itemID: string | null };
 };

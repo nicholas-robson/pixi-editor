@@ -317,9 +317,21 @@ export function initApp(state: EditorState) {
         }
     );
 
-    subscribe(appSelector);
+    const focusSelector = createSelector(
+        (state: EditorState) => state.focus,
+        (focus) => {
+            const pixiObj = pixiObjects.find((p) => p.id === focus.itemID);
+            if (pixiObj === undefined) return;
 
+            viewport.moveCenter(pixiObj.position.x + pixiObj.width * 0.5, pixiObj.position.y + pixiObj.height * 0.5);
+            viewport.emit('moved', { viewport });
+        }
+    );
+
+    subscribe(appSelector);
+    subscribe(focusSelector);
     appSelector(state);
+    focusSelector(state);
 
     DrawGrid(viewport, grid, background, debug, pixiObjects, canvasWidth, canvasHeight);
 }
@@ -380,7 +392,6 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.style.dropShadowDistance = item.textStyle.dropShadowDistance ?? pixiObject.style.dropShadowDistance;
         pixiObject.style.textBaseline = item.textStyle.textBaseline ?? pixiObject.style.textBaseline;
         pixiObject.style.fillGradientStops = item.textStyle.fillGradientStops ?? pixiObject.style.fillGradientStops;
-
     } else if (pixiObject instanceof Sprite) {
         setTexture(pixiObject, item.texture);
         pixiObject.tint = item.tint;

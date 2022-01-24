@@ -6,6 +6,7 @@ import {
     deselectAllAction,
     deselectItemsAction,
     duplicateItemAction,
+    focusItemAction,
     moveItemsAction,
     redoAction,
     renameItemAction,
@@ -136,5 +137,19 @@ export function rootReducer(state: EditorState, action: Action): EditorState {
         return state;
     }
 
+    if (focusItemAction.match(action)) {
+        return focusItem(state, action.payload);
+    }
+
     return state;
+}
+
+function focusItem(state: EditorState, id: string): EditorState {
+    const item = state.items.find((item) => item.id === id);
+    if (item === undefined) return state;
+
+    return {
+        ...state,
+        focus: { itemID: id },
+    };
 }

@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 main {
     display: flex;
     flex-wrap: nowrap;
@@ -34,7 +38,7 @@ main {
     padding: 0;
     background-color: #181b1e;
     border-color: transparent;
-    border-radius: .25rem;
+    border-radius: 0.25rem;
     max-width: 100%;
     height: auto;
 }
@@ -44,19 +48,20 @@ main {
 /*    visibility: hidden;*/
 /*}*/
 
-#right-panel .form-control-sm, #right-panel .form-select-sm {
+#right-panel .form-control-sm,
+#right-panel .form-select-sm {
     padding: 2px 8px;
     min-height: inherit;
     background-color: #181b1e;
     border: none;
-    color:white;
+    color: white;
 }
 
 #right-panel .form-control-sm[type='color'] {
     /*min-height: calc(1.5em + .5rem + 2px);*/
     padding: 4px 8px;
     border: none;
-    height:100%;
+    height: 100%;
     /*border-radius: 5px;*/
     /*width: auto;*/
     /*aspect-ratio: 1;*/
