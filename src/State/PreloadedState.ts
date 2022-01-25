@@ -6,7 +6,7 @@ import { normalizeIndexes } from 'State/Item/NormalizeIndexes';
 export const preloadedState: EditorState = normalizeIndexes({
     undo: [],
     redo: [],
-    focus: { itemID: null },
+    focus: { itemID: "text_1" },
     viewport: {
         x : 0,
         y : 0,
@@ -26,7 +26,7 @@ export const preloadedState: EditorState = normalizeIndexes({
             id: 'sprite_1',
             // parent: 'root_1',
             type: PixiType.SPRITE,
-            texture: 'nine-slice-test.png',
+            texture: 'audiosfx_1_2.png',
         }),
         // getItem({
         //     id: 'sprite_2',

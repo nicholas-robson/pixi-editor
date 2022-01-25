@@ -10,7 +10,7 @@ export function getTextAreaControl(prop: Prop<string>): Control {
     <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm'>${getLabel(prop)}</label>
     <div class='col-sm-8'>
         <textarea class='form-control form-control-sm' id='${prop.id}'
-            ${prop.controlOptions?.readonly ? 'readonly' : ''}>
+            ${prop.controlOptions?.readonly ? 'readonly' : ''}></textarea>
     </div>
 </div>
     `);

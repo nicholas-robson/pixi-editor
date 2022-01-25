@@ -28,14 +28,11 @@ type PixiObject = Container & { id: string };
 
 let viewport: Viewport;
 const pixiObjects: PixiObject[] = [];
-const canvas = document.getElementById('canvas-container') as HTMLCanvasElement;
 
 export function toLocal(x: number, y: number, parent: string | null) {
     if (parent !== null) {
         const pixiParent = pixiObjects.find((p) => p.id === parent);
         if (pixiParent === undefined) return new Point(0, 0);
-
-        // console.log(pixiParent);
 
         return pixiParent.toLocal(new Point(x, y));
     }
@@ -154,15 +151,35 @@ export function initApp(state: EditorState) {
         },
         wireframeStyle: {
             color: 0x3392e3,
+            thickness: 2,
         },
-    });
+    } as any);
 
     transformer.on('transformcommit', () => {
         const items = pixiObjectToItems(getState(), transformer.group as PixiObject[]);
-
-        //console.log(items);
         dispatch(updateItemsAction(items));
     });
+
+    // const translateHandler = new TransformerHandle(
+    //     transformer,
+    //     'middleCenter',
+    //     {
+    //         radius: 10,
+    //         shape: 'circle',
+    //         color: 0xffffff,
+    //         outlineColor: 0x000000,
+    //         outlineThickness: 2,
+    //     },
+    //     (point) => {
+    //         console.log('points', point);
+    //     },
+    //     () => {
+    //         console.log('farts');
+    //     },
+    //     'n-resize'
+    // );
+
+    // transformer.handles.push(transformer)
 
     // transformer.on("transformchange", () => {
     //     console.log("BANANA");
@@ -242,13 +259,6 @@ export function initApp(state: EditorState) {
 
         const result = app.renderer.plugins.interaction.hitTest(e.data.global);
 
-        //console.log(result);
-
-        // If tapping transformer ignore.
-        // const isTransformer = hasParent(result, transformer);
-        // if (isTransformer) return;
-
-        //console.log(result);
         if (result?.id !== undefined) {
             dispatch(selectItemsAction([result.id], !shiftDown));
             e.stopPropagation();
@@ -256,9 +266,6 @@ export function initApp(state: EditorState) {
             dispatch(deselectAllAction());
         }
     });
-
-    //console.log(app.renderer.plugins.interaction);
-    //app.renderer.plugins.interaction.hitTest();
 
     const appSelector = createSelector(
         (state: EditorState) => state,
@@ -312,6 +319,19 @@ export function initApp(state: EditorState) {
                 .filter((obj) => obj !== undefined);
 
             transformer.group = selected as any;
+            const transformerBounds = transformer.getGroupBounds(true);
+
+            if (
+                transformerBounds.bottomRight.x - transformerBounds.topLeft.x < 5 &&
+                transformerBounds.bottomRight.y - transformerBounds.topLeft.y < 5
+            ) {
+                //transformer.translateEnabled = true;
+                transformer.scaleEnabled = false;
+            } else {
+                // transformer.handleStyle.
+                // transformer.translateEnabled = false;
+                transformer.scaleEnabled = true;
+            }
 
             DrawGrid(viewport, grid, background, debug, pixiObjects, canvasWidth, canvasHeight);
         }

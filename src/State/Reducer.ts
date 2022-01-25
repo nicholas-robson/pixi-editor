@@ -12,6 +12,7 @@ import {
     renameItemAction,
     selectAllAction,
     selectItemsAction,
+    translateAction,
     undoAction,
     updateItemAction,
     updateItemsAction,
@@ -141,7 +142,35 @@ export function rootReducer(state: EditorState, action: Action): EditorState {
         return focusItem(state, action.payload);
     }
 
+    if (translateAction.match(action)) {
+        return translate(state, action.payload.x, action.payload.y);
+    }
+
     return state;
+}
+
+function translate(state: EditorState, x: number, y: number): EditorState {
+    const selectedItems = state.items.find((item) => item.selected);
+    if (selectedItems === undefined) return state;
+
+    return {
+        ...state,
+        items: [
+            ...state.items.map((item) => {
+                if (!item.selected) {
+                    return item;
+                }
+
+                return {
+                    ...item,
+                    position: {
+                        x: item.position.x + x,
+                        y: item.position.y + y,
+                    },
+                };
+            }),
+        ],
+    };
 }
 
 function focusItem(state: EditorState, id: string): EditorState {

@@ -53,3 +53,7 @@ export const deleteAction = createAction('DELETE');
 export const focusItemAction = createAction('FOCUS_ITEM', (id: string) => ({
     payload: id,
 }));
+
+export const translateAction = createAction('TRANSLATE', (x: number, y: number) => ({
+    payload: { x, y },
+}));

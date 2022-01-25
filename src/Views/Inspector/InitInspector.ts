@@ -11,6 +11,7 @@ import { getSelected } from 'Controls/Controls';
 
 export function initInspector(state: EditorState) {
     const attachEmAll: (() => void)[] = [];
+    const selectors: ((state: EditorState) => void)[] = [];
 
     const topProps = [
         { id: 'type', control: ControlType.STRING, controlOptions: { readonly: true } },
@@ -24,7 +25,7 @@ export function initInspector(state: EditorState) {
         const control = controlTypeCreatorMap[p.control](p);
         topPropsContainer.append(control.element);
         attachEmAll.push(control.onAttach);
-        control.selector(state);
+        selectors.push(control.selector);
     });
 
     const sectionsContainer = $(`<div>`);
@@ -43,7 +44,7 @@ export function initInspector(state: EditorState) {
             const control = controlTypeCreatorMap[p.control](p);
             content.append(control.element);
             attachEmAll.push(control.onAttach);
-            control.selector(state);
+            selectors.push(control.selector);
         });
 
         section.append(header);
@@ -62,9 +63,7 @@ export function initInspector(state: EditorState) {
             }
         );
 
-        subscribe(selector);
-
-        selector(state);
+        selectors.push(selector);
 
         return;
     });
@@ -74,4 +73,10 @@ export function initInspector(state: EditorState) {
 
     // TODO: Ugh... how to add listeners before attaching to dom...?
     attachEmAll.forEach((a) => a());
+
+    // Call selectors with initial state.
+    selectors.forEach((selector) => {
+        subscribe(selector);
+        selector(state);
+    });
 }

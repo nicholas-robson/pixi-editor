@@ -12,7 +12,7 @@ const allTypes: PixiType[] = [
 
 export const allProps: PropGroup[] = [
     {
-        id : "transform",
+        id: 'transform',
         types: allTypes,
         props: [
             { id: 'position', control: ControlType.VECTOR2 },
@@ -24,7 +24,7 @@ export const allProps: PropGroup[] = [
     },
 
     {
-        id : "options",
+        id: 'options',
         types: allTypes,
         props: [
             { id: 'visible', control: ControlType.BOOLEAN },
@@ -37,19 +37,31 @@ export const allProps: PropGroup[] = [
     },
 
     {
-        id : "sprite",
+        id: 'sprite',
         types: [PixiType.SPRITE],
         props: [
-            { id: 'texture', control: ControlType.TEXTURE },
+            {
+                id: 'spriteTexture',
+                controlOptions: { label: 'Texture' },
+                control: ControlType.TEXTURE,
+                valueToItem: (value) => ({ texture: value }),
+                itemToValue: (item) => item?.texture,
+            },
             { id: 'anchor', control: ControlType.VECTOR2, controlOptions: { step: 0.1 } },
         ],
     },
 
     {
-        id : "nineSlice",
+        id: 'nineSlice',
         types: [PixiType.NINE_SLICE],
         props: [
-            { id: 'texture', control: ControlType.TEXTURE },
+            {
+                id: 'nineSliceTexture',
+                controlOptions: { label: 'Texture' },
+                control: ControlType.TEXTURE,
+                valueToItem: (value) => ({ texture: value }),
+                itemToValue: (item) => item?.texture,
+            },
             {
                 id: 'size',
                 control: ControlType.VECTOR2,
@@ -77,7 +89,7 @@ export const allProps: PropGroup[] = [
     },
 
     {
-        id : "text",
+        id: 'text',
         types: [PixiType.TEXT],
         props: [
             { id: 'text', control: ControlType.TEXTAREA },
@@ -176,7 +188,7 @@ export const allProps: PropGroup[] = [
             },
             {
                 id: 'breakWords',
-                control: ControlType.NUMBER,
+                control: ControlType.BOOLEAN,
                 valueToItem: (value) => ({ textStyle: { breakWords: value } }),
                 itemToValue: (item) => item?.textStyle.breakWords ?? 0,
             },
@@ -222,7 +234,7 @@ export const allProps: PropGroup[] = [
     },
 
     {
-        id: "textColor",
+        id: 'textColor',
         types: [PixiType.TEXT],
         props: [
             {
@@ -247,7 +259,7 @@ export const allProps: PropGroup[] = [
 
             {
                 id: 'dropShadow',
-                control: ControlType.NUMBER,
+                control: ControlType.BOOLEAN,
                 valueToItem: (value) => ({ textStyle: { dropShadow: value } }),
                 itemToValue: (item) => item?.textStyle.dropShadow ?? 0,
             },

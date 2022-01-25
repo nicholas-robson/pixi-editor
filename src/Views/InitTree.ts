@@ -40,7 +40,7 @@ export function initTree(state: EditorState) {
     tree.jstree({
         plugins: ['search', 'changed', 'conditionalselect', 'dnd', 'types', 'wholerow'], // contextmenu
         core: {
-            data: getJSTreeData(state.items),
+            //data: getJSTreeData(state.items),
             themes: { name: 'custom-theme', responsive: true, dots: false, icons: true, variant: 'large' },
             check_callback: function (operation: any, node: any, node_parent: any, node_position: any, more: any) {
                 if (!node_parent) return true;
@@ -210,55 +210,58 @@ export function initTree(state: EditorState) {
         $(tree).jstree(true).close_all(null, 100);
     });
 
-    subscribe(
-        createSelector(
-            (state: EditorState) => state.items,
-            (items) => {
-                const nodes = $(tree).jstree(true).get_json(undefined, { flat: true });
+    const selector = createSelector(
+        (state: EditorState) => state.items,
+        (items) => {
+            const nodes = $(tree).jstree(true).get_json(undefined, { flat: true });
 
-                const added = getJSTreeData(
-                    items.filter((item) => !nodes.map((node: any) => node.id).includes(item.id))
-                );
+            const added = getJSTreeData(items.filter((item) => !nodes.map((node: any) => node.id).includes(item.id)));
 
-                const removed = nodes
-                    .filter((node: any) => !items.map((item) => item.id).includes(node.id))
-                    .map((node: any) => node.id);
+            const removed = nodes
+                .filter((node: any) => !items.map((item) => item.id).includes(node.id))
+                .map((node: any) => node.id);
 
-                added.forEach((treeItem) => {
-                    $(tree).jstree(true).create_node(treeItem.parent, treeItem, treeItem.position);
+            added.forEach((treeItem) => {
+                $(tree).jstree(true).create_node(treeItem.parent, treeItem, treeItem.position);
+            });
+
+            removed.forEach((id: string) => {
+                const node = $(tree).jstree(true).get_node(id);
+                $(tree).jstree(true).delete_node(id);
+            });
+
+            // Select/deselect.
+            items.forEach((item) => {
+                const node = $(tree).jstree(true).get_node(item.id);
+
+                if (node === false) return;
+
+                if (item.selected && !node.state.selected) {
+                    $(tree).jstree(true).select_node(item.id, false, false, { dispatch: false });
+                } else if (!item.selected && node.state.selected) {
+                    $(tree).jstree(true).deselect_node(item.id, false, { dispatch: false });
+                }
+
+                if (item.name !== node.text) {
+                    node.text = item.name;
+                    $(tree).jstree(true).redraw_node(node, false, false, false);
+
+                    // Do not call `rename_node` or it will dispatch a rename action and disrupt undo stack.
+                }
+            });
+
+            // Ugly but it works...
+            $('.jstree-node')
+                .off('dblclick')
+                .on('dblclick', (e) => {
+                    const itemID = $(e.currentTarget).attr('id');
+                    if (typeof itemID !== 'string') return;
+                    dispatch(focusItemAction(itemID));
                 });
-
-                removed.forEach((id: string) => {
-                    const node = $(tree).jstree(true).get_node(id);
-                    $(tree).jstree(true).delete_node(id);
-                });
-
-                // Select/deselect.
-                items.forEach((item) => {
-                    const node = $(tree).jstree(true).get_node(item.id);
-                    if (item.selected && !node.state.selected) {
-                        $(tree).jstree(true).select_node(item.id, false, false, { dispatch: false });
-                    } else if (!item.selected && node.state.selected) {
-                        $(tree).jstree(true).deselect_node(item.id, false, { dispatch: false });
-                    }
-
-                    if (item.name !== node.text) {
-                        node.text = item.name;
-                        $(tree).jstree(true).redraw_node(node, false, false, false);
-
-                        // Do not call `rename_node` or it will dispatch a rename action and disrupt undo stack.
-                    }
-                });
-
-                // Ugly but it works...
-                $('.jstree-node')
-                    .off('dblclick')
-                    .on('dblclick', (e) => {
-                        const itemID = $(e.currentTarget).attr('id');
-                        if (typeof itemID !== 'string') return;
-                        dispatch(focusItemAction(itemID));
-                    });
-            }
-        )
+        }
     );
+
+    subscribe(selector);
+
+    selector(state);
 }
