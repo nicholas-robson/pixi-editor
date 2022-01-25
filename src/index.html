@@ -2,7 +2,7 @@
     <head></head>
 
     <body>
-        <main class="flex-row">
+        <main id="main" class="flex-row">
             <div
                 id="left-panel"
                 class="d-flex flex-column flex-shrink-0 p-2 text-white bg-dark shadow"
@@ -28,11 +28,18 @@
                     <div id="tree-container"></div>
             </div>
 
-            <div id="center-panel" class="flex-grow-1 bg-dark grab">
+            <div id="center-panel" class="d-flex flex-row-reverse flex-grow-1 bg-dark">
                 <canvas id="canvas-container"></canvas>
+
+<!--                <div id="viewport-panel" class="d-flex bg-dark flex-grow-1 align-self-end" style='height:200px; z-index:500;'>-->
+
+<!--                    <input />-->
+
+<!--                </div>-->
             </div>
 
-            <div id="right-panel" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark shadow" style="width: 320px; z-index: 500">
+            <div id="right-panel" class="py-2 text-white bg-dark shadow" style="z-index: 500">
+                <div id="right-panel-content"></div>
             </div>
         </main>
     </body>

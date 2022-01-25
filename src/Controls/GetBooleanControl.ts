@@ -2,7 +2,6 @@ import { getLabel } from 'Controls/GetLabel';
 import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
-import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 
 export function getBooleanControl(prop: Prop<boolean>): Control {
@@ -18,13 +17,9 @@ export function getBooleanControl(prop: Prop<boolean>): Control {
     `);
 
     const selector = getSelector(prop, (item, value) => {
-        const hasType = item !== undefined && typeHasProp(item.type, prop);
+        $(`#${prop.id}`).prop('disabled', item === undefined);
 
-        if (!hasType) {
-            element.hide();
-        } else {
-            element.show();
-            // $(`#${prop.id}`).prop('disabled', item === undefined);
+        if (item !== undefined) {
             $(`#${prop.id}`).prop('checked', value ?? false);
         }
     });

@@ -2,7 +2,6 @@ import { subscribe } from 'State/State';
 import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
 import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
-import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 
 export function getNumberControl(prop: Prop<number>): Control {
@@ -17,13 +16,9 @@ export function getNumberControl(prop: Prop<number>): Control {
     `);
 
     const selector = getSelector(prop, (item, value) => {
-        const hasType = item !== undefined && typeHasProp(item.type, prop);
+        $(`#${prop.id}`).prop('disabled', item === undefined);
 
-        if (!hasType) {
-            element.hide();
-        } else {
-            element.show();
-            //   $(`#${prop.id}`).prop('disabled', item === undefined);
+        if (item !== undefined) {
             $(`#${prop.id}`).val(value ?? '');
         }
     });

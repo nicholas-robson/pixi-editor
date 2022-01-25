@@ -328,10 +328,31 @@ export function initApp(state: EditorState) {
         }
     );
 
+    const viewportSizeSelector = createSelector(
+        (state: EditorState) => state.viewport.width,
+        (state: EditorState) => state.viewport.height,
+        (width, height) => {
+            canvasWidth = width;
+            canvasHeight = height;
+            DrawGrid(viewport, grid, background, debug, pixiObjects, canvasWidth, canvasHeight);
+        }
+    );
+
+    // const viewportSelector = createSelector(
+    //     (state: EditorState) => state.viewport.x,
+    //     (state: EditorState) => state.viewport.y,
+    //     (x, y) => {
+    //         viewport.position.set(x, y);
+    //         viewport.emit('moved', { viewport });
+    //     }
+    // );
+
     subscribe(appSelector);
     subscribe(focusSelector);
+    subscribe(viewportSizeSelector);
     appSelector(state);
     focusSelector(state);
+    viewportSizeSelector(state);
 
     DrawGrid(viewport, grid, background, debug, pixiObjects, canvasWidth, canvasHeight);
 }

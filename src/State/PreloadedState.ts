@@ -7,6 +7,13 @@ export const preloadedState: EditorState = normalizeIndexes({
     undo: [],
     redo: [],
     focus: { itemID: null },
+    viewport: {
+        x : 0,
+        y : 0,
+        width: 800,
+        height: 600,
+        zoom : 1,
+    },
     items: [
         // getItem({
         //     id: 'root_1',

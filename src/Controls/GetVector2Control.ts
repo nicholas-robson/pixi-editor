@@ -3,7 +3,6 @@ import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
 import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
 import { Vector2 } from 'Utility/Vector2';
-import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 import { Item } from 'State/Item';
 
@@ -26,16 +25,10 @@ export function getVector2Control(prop: Prop<Vector2>): Control {
     `);
 
     const selector = getSelector(prop, (item, value) => {
-        const hasType = item !== undefined && typeHasProp(item.type, prop);
+        $(`#${xID}`).prop('disabled', item === undefined);
+        $(`#${yID}`).prop('disabled', item === undefined);
 
-        if (!hasType) {
-            element.hide();
-        } else {
-            element.show();
-
-            // $(`#${xID}`).prop('disabled', item === undefined);
-            // $(`#${yID}`).prop('disabled', item === undefined);
-
+        if (item !== undefined) {
             $(`#${xID}`).val(((value as Vector2)?.x as number) ?? '');
             $(`#${yID}`).val(((value as Vector2)?.y as number) ?? '');
         }

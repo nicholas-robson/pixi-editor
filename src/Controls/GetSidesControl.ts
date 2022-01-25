@@ -2,7 +2,6 @@ import { subscribe } from 'State/State';
 import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
 import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
-import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 
 type Sides = {
@@ -53,13 +52,12 @@ export function getSidesControl(prop: Prop<Sides>): Control {
     `);
 
     const selector = getSelector(prop, (item, value) => {
-        const hasType = item !== undefined && typeHasProp(item.type, prop);
+        $(`#${topID}`).prop('disabled', item === undefined);
+        $(`#${leftID}`).prop('disabled', item === undefined);
+        $(`#${rightID}`).prop('disabled', item === undefined);
+        $(`#${bottomID}`).prop('disabled', item === undefined);
 
-        if (!hasType) {
-            element.hide();
-        } else {
-            element.show();
-
+        if (item !== undefined) {
             $(`#${topID}`).val(value?.top ?? '');
             $(`#${leftID}`).val(value?.left ?? '');
             $(`#${rightID}`).val(value?.right ?? '');

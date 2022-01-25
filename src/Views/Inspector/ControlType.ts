@@ -6,7 +6,6 @@ export enum ControlType {
     COLOR = 'color',
     TEXTURE = 'texture',
     SIDES = 'sides',
-    SEPARATOR = 'separator',
     TEXTAREA = 'textarea',
     RADIOBUTTONS = 'radiobuttons',
     SELECT = 'select',

@@ -2,7 +2,6 @@ import { getLabel } from 'Controls/GetLabel';
 import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
-import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 
 export function getSelectControl(prop: Prop<string>): Control {
@@ -23,15 +22,10 @@ export function getSelectControl(prop: Prop<string>): Control {
     `);
 
     const selector = getSelector(prop, (item, value) => {
-        const hasType = item !== undefined && typeHasProp(item.type, prop);
+        $(`#${prop.id}`).prop('disabled', item === undefined);
 
-        if (!hasType) {
-            element.hide();
-        } else {
-            element.show();
-            if (value !== undefined) {
-                $(`#${prop.id}`).val(value);
-            }
+        if (item !== undefined && value !== undefined) {
+            $(`#${prop.id}`).val(value);
         }
     });
 

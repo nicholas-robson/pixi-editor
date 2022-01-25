@@ -1,21 +1,77 @@
 import $ from 'jquery';
 import 'bootstrap';
 import { EditorState } from 'State/EditorState';
-import { typePropMap } from 'Views/Inspector/TypePropMap';
-import { Prop } from 'Views/Inspector/Prop';
 import { controlTypeCreatorMap } from 'Views/Inspector/ControlTypeCreatorMap';
+import { allProps } from 'Views/Inspector/DefaultProps';
+import { camelCaseToTitle } from 'Controls/CamelCaseToTitle';
+import { ControlType } from 'Views/Inspector/ControlType';
+import { subscribe } from 'State/State';
+import { createSelector } from 'reselect';
+import { getSelected } from 'Controls/Controls';
 
 export function initInspector(state: EditorState) {
-    const controls = Object.values(typePropMap)
-        .reduce<Prop<any>[]>(
-            (acc, v) => [...acc, ...v.filter((vv) => vv.id === undefined || !acc.map((p) => p.id).includes(vv.id))],
-            []
-        )
-        .map((p) => controlTypeCreatorMap[p.control](p));
+    const attachEmAll: (() => void)[] = [];
 
-    controls.forEach((control) => {
-        $('#right-panel').append(control.element);
-        control.onAttach();
+    const topProps = [
+        { id: 'type', control: ControlType.STRING, controlOptions: { readonly: true } },
+        { id: 'id', control: ControlType.STRING, controlOptions: { readonly: true } },
+        { id: 'name', control: ControlType.STRING },
+    ];
+
+    const topPropsContainer = $("<div class='container controls'></div>");
+
+    topProps.forEach((p) => {
+        const control = controlTypeCreatorMap[p.control](p);
+        topPropsContainer.append(control.element);
+        attachEmAll.push(control.onAttach);
         control.selector(state);
     });
+
+    const sectionsContainer = $(`<div>`);
+
+    allProps.forEach((propGroup) => {
+        const section = $('<div>');
+
+        const header = $(`
+            <button class='header-button' data-bs-toggle="collapse" data-bs-target="#collapse-${propGroup.id}">
+              ${camelCaseToTitle(propGroup.id)}
+            </button>`);
+
+        const content = $(`<div class='collapse show controls container' id='collapse-${propGroup.id}'>`);
+
+        propGroup.props.forEach((p) => {
+            const control = controlTypeCreatorMap[p.control](p);
+            content.append(control.element);
+            attachEmAll.push(control.onAttach);
+            control.selector(state);
+        });
+
+        section.append(header);
+        section.append(content);
+
+        sectionsContainer.append(section);
+
+        const selector = createSelector(
+            (state: EditorState) => getSelected(state)?.type,
+            (type) => {
+                if (type !== undefined && propGroup.types.includes(type)) {
+                    $(section).show();
+                } else {
+                    $(section).hide();
+                }
+            }
+        );
+
+        subscribe(selector);
+
+        selector(state);
+
+        return;
+    });
+
+    $('#right-panel-content').append(topPropsContainer);
+    $('#right-panel-content').append(sectionsContainer);
+
+    // TODO: Ugh... how to add listeners before attaching to dom...?
+    attachEmAll.forEach((a) => a());
 }

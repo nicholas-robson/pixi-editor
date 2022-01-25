@@ -2,7 +2,6 @@ import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
 import { getLabel } from 'Controls/GetLabel';
-import { typeHasProp } from 'Views/Inspector/TypeHasProp';
 import { Prop } from 'Views/Inspector/Prop';
 import { getTextureData, setTextureData } from 'Views/PixiApp/InitApp';
 
@@ -20,12 +19,9 @@ export function getImageControl(prop: Prop<string>): Control {
     `);
 
     const selector = getSelector(prop, (item, value) => {
-        const hasType = item !== undefined && typeHasProp(item.type, prop);
+        $(`#${prop.id}`).prop('disabled', item === undefined);
 
-        if (!hasType) {
-            element.hide();
-        } else {
-            element.show();
+        if (item !== undefined) {
             $(`#image-${prop.id}`).attr('src', value ? getTextureData(value) ?? '' : '');
         }
     });

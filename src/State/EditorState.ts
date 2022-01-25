@@ -6,4 +6,11 @@ export type EditorState = {
     redo: UndoState[];
     items: Item[];
     focus: { itemID: string | null };
+    viewport: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        zoom: number;
+    };
 };

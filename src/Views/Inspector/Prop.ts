@@ -1,6 +1,7 @@
 import { ControlOptions } from 'Controls/Controls';
 import { ControlType } from 'Views/Inspector/ControlType';
 import { Item } from 'State/Item';
+import { PixiType } from 'State/PixiType';
 
 export type InputOption = {
     value:string | number,
@@ -15,4 +16,10 @@ export type Prop<T> = {
     control: ControlType;
     controlOptions?: ControlOptions;
     inputOptions?: InputOption[]
+};
+
+export type PropGroup = {
+    id: string;
+    types:PixiType[],
+    props: Prop<any>[]
 };
