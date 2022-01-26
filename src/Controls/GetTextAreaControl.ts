@@ -1,5 +1,4 @@
 import { getLabel } from 'Controls/GetLabel';
-import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
 import { Prop } from 'Views/Inspector/Prop';
@@ -22,8 +21,6 @@ export function getTextAreaControl(prop: Prop<string>): Control {
             $(`#${prop.id}`).val(value ?? '');
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

@@ -1,6 +1,7 @@
-import { PropGroup } from 'Views/Inspector/Prop';
+import { Prop, PropGroup } from 'Views/Inspector/Prop';
 import { ControlType } from 'Views/Inspector/ControlType';
 import { PixiType } from 'State/PixiType';
+import { Item, Layout } from 'State/Item';
 
 const allTypes: PixiType[] = [
     PixiType.DISPLAY_OBJECT,
@@ -11,6 +12,16 @@ const allTypes: PixiType[] = [
 ];
 
 export const allProps: PropGroup[] = [
+    {
+        id: 'info',
+        types: allTypes,
+        props: [
+            { id: 'type', control: ControlType.STRING, controlOptions: { readonly: true } },
+            { id: 'id', control: ControlType.STRING, controlOptions: { readonly: true } },
+            { id: 'name', control: ControlType.STRING },
+            { id: 'layoutEnabled', control: ControlType.BOOLEAN },
+        ],
+    },
     {
         id: 'transform',
         types: allTypes,
@@ -24,7 +35,7 @@ export const allProps: PropGroup[] = [
     },
 
     {
-        id: 'options',
+        id: 'display',
         types: allTypes,
         props: [
             { id: 'visible', control: ControlType.BOOLEAN },
@@ -63,7 +74,7 @@ export const allProps: PropGroup[] = [
                 itemToValue: (item) => item?.texture,
             },
             {
-                id: 'size',
+                id: 'nineSliceSize',
                 control: ControlType.VECTOR2,
                 itemToValue: (item) => ({ x: item?.width, y: item?.height }),
                 valueToItem: (value) => ({ width: value.x, height: value.y }),
@@ -73,16 +84,18 @@ export const allProps: PropGroup[] = [
                 control: ControlType.SIDES,
                 controlOptions: { label: '9-Slice Edges' },
                 itemToValue: (item) => ({
-                    top: item?.topHeight,
-                    left: item?.leftWidth,
-                    right: item?.rightWidth,
-                    bottom: item?.bottomHeight,
+                    top: item?.nineSliceSize.top,
+                    left: item?.nineSliceSize.left,
+                    right: item?.nineSliceSize.right,
+                    bottom: item?.nineSliceSize.bottom,
                 }),
                 valueToItem: (value) => ({
-                    topHeight: value.top,
-                    leftWidth: value.left,
-                    rightWidth: value.right,
-                    bottomHeight: value.bottom,
+                    nineSliceSize: {
+                        top: value.top,
+                        left: value.left,
+                        right: value.right,
+                        bottom: value.bottom,
+                    },
                 }),
             },
         ],
@@ -266,6 +279,9 @@ export const allProps: PropGroup[] = [
             {
                 id: 'dropShadowAlpha',
                 control: ControlType.NUMBER,
+                controlOptions: {
+                    step: 0.1,
+                },
                 valueToItem: (value) => ({ textStyle: { dropShadowAlpha: value } }),
                 itemToValue: (item) => item?.textStyle.dropShadowAlpha ?? 0,
             },
@@ -305,6 +321,234 @@ export const allProps: PropGroup[] = [
                 control: ControlType.STRING,
                 valueToItem: (value) => ({ textStyle: { fillGradientStops: value.split(',') } }),
                 itemToValue: (item) => item?.textStyle.fillGradientStops ?? '',
+            },
+        ],
+    },
+    {
+        id: 'flex',
+        types: allTypes,
+        condition: (item) => item !== undefined && (item as any).layoutEnabled,
+        props: [
+            {
+                id: 'flex',
+                control: ControlType.RADIOBUTTONS,
+                inputOptions: [
+                    { value: 'inherit', label: 'inherit' },
+                    { value: 'ltr', label: 'ltr' },
+                    { value: 'rtl', label: 'rtl' },
+                ],
+                valueToItem: (value) => ({ layout: { flex: value } }),
+                itemToValue: (item) => item?.layout.flex ?? '',
+            },
+            {
+                id: 'flexDirection',
+                control: ControlType.SELECT,
+                inputOptions: [
+                    { value: 'row' },
+                    { value: 'row-reverse' },
+                    { value: 'column' },
+                    { value: 'column-reverse' },
+                ],
+                valueToItem: (value) => ({ layout: { flexDirection: value } }),
+                itemToValue: (item) => item?.layout.flexDirection ?? '',
+            },
+            {
+                id: 'basisAuto',
+                control: ControlType.BOOLEAN,
+
+                valueToItem: (value) => ({ layout: { basisAuto: value } }),
+                itemToValue: (item) => item?.layout.basisAuto ?? '',
+            },
+            {
+                id: 'basis',
+                condition: (item) => (item as any)?.basisAuto === false,
+                control: ControlType.NUMBER,
+
+                valueToItem: (value) => ({ layout: { basis: value } }),
+                itemToValue: (item) => item?.layout.basis ?? '',
+            },
+            {
+                id: 'grow',
+                control: ControlType.NUMBER,
+
+                valueToItem: (value) => ({ layout: { grow: value } }),
+                itemToValue: (item) => item?.layout.grow ?? '',
+            },
+            {
+                id: 'shrink',
+                control: ControlType.NUMBER,
+
+                valueToItem: (value) => ({ layout: { shrink: value } }),
+                itemToValue: (item) => item?.layout.shrink ?? '',
+            },
+            {
+                id: 'flexWrap',
+                control: ControlType.RADIOBUTTONS,
+                inputOptions: [{ value: 'no-wrap' }, { value: 'wrap' }, { value: 'wrap-reverse' }],
+
+                valueToItem: (value) => ({ layout: { flexWrap: value } }),
+                itemToValue: (item) => item?.layout.flexWrap ?? '',
+            },
+        ],
+    },
+    {
+        id: 'alignment',
+        types: allTypes,
+        condition: (item) => item !== undefined && (item as any).layoutEnabled,
+        props: [
+            {
+                id: 'justifyContent',
+                control: ControlType.SELECT,
+                inputOptions: [
+                    { value: 'flex-start', label: 'flex start' },
+                    { value: 'center', label: 'center' },
+                    { value: 'flex-end', label: 'flex end' },
+                    { value: 'space-between', label: 'space between' },
+                    { value: 'space-around', label: 'space around' },
+                    { value: 'space-evenly', label: 'space evenly' },
+                ],
+
+                valueToItem: (value) => ({ layout: { justifyContent: value } }),
+                itemToValue: (item) => item?.layout.justifyContent ?? '',
+            },
+            {
+                id: 'alignItems',
+                control: ControlType.SELECT,
+                inputOptions: [
+                    { value: 'auto', label: 'auto' },
+                    { value: 'flex-start', label: 'flex start' },
+                    { value: 'center', label: 'center' },
+                    { value: 'flex-end', label: 'flex end' },
+                    { value: 'stretch', label: 'stretch' },
+                    { value: 'baseline', label: 'baseline' },
+                    { value: 'space-between', label: 'space between' },
+                    { value: 'space-around', label: 'space around' },
+                ],
+
+                valueToItem: (value) => ({ layout: { alignItems: value } }),
+                itemToValue: (item) => item?.layout.alignItems ?? '',
+            },
+            {
+                id: 'alignSelf',
+                control: ControlType.SELECT,
+                inputOptions: [
+                    { value: 'auto', label: 'auto' },
+                    { value: 'flex-start', label: 'flex start' },
+                    { value: 'center', label: 'center' },
+                    { value: 'flex-end', label: 'flex end' },
+                    { value: 'stretch', label: 'stretch' },
+                    { value: 'baseline', label: 'baseline' },
+                    { value: 'space-between', label: 'space between' },
+                    { value: 'space-around', label: 'space around' },
+                ],
+
+                valueToItem: (value) => ({ layout: { alignSelf: value } }),
+                itemToValue: (item) => item?.layout.alignSelf ?? '',
+            },
+            {
+                id: 'alignContent',
+                control: ControlType.SELECT,
+                inputOptions: [
+                    { value: 'auto', label: 'auto' },
+                    { value: 'flex-start', label: 'flex start' },
+                    { value: 'center', label: 'center' },
+                    { value: 'flex-end', label: 'flex end' },
+                    { value: 'stretch', label: 'stretch' },
+                    { value: 'baseline', label: 'baseline' },
+                    { value: 'space-between', label: 'space between' },
+                    { value: 'space-around', label: 'space around' },
+                ],
+
+                valueToItem: (value) => ({ layout: { alignContent: value } }),
+                itemToValue: (item) => item?.layout.alignContent ?? '',
+            },
+        ],
+    },
+    {
+        id: 'layout',
+        types: allTypes,
+        condition: (item) => item !== undefined && (item as any).layoutEnabled,
+        props: [
+            {
+                id: 'positionType',
+                control: ControlType.RADIOBUTTONS,
+                inputOptions: [
+                    {
+                        value: 'relative',
+                    },
+                    {
+                        value: 'absolute',
+                    },
+                ],
+
+                valueToItem: (value) => ({ layout: { positionType: value } }),
+                itemToValue: (item) => item?.layout.positionType ?? '',
+            },
+            {
+                id: 'absolutePosition',
+                condition: (item) => (item as any)?.positionType === 'absolute',
+                control: ControlType.SIDES,
+
+                valueToItem: (value) => ({ layout: { absolutePosition: value } }),
+                itemToValue: (item) => item?.layout.absolutePosition ?? '',
+            },
+            {
+                id: 'margin',
+                control: ControlType.SIDES,
+
+                valueToItem: (value) => ({ layout: { margin: value } }),
+                itemToValue: (item) => item?.layout.margin ?? '',
+            },
+            {
+                id: 'padding',
+                control: ControlType.SIDES,
+
+                valueToItem: (value) => ({ layout: { padding: value } }),
+                itemToValue: (item) => item?.layout.padding ?? '',
+            },
+            {
+                id: 'border',
+                control: ControlType.SIDES,
+
+                valueToItem: (value) => ({ layout: { border: value } }),
+                itemToValue: (item) => item?.layout.border ?? '',
+            },
+            {
+                id: 'aspectRatioAuto',
+                control: ControlType.BOOLEAN,
+
+                valueToItem: (value) => ({ layout: { aspectRatioAuto: value } }),
+                itemToValue: (item) => item?.layout.aspectRatioAuto ?? '',
+            },
+            {
+                id: 'aspectRatio',
+                condition: (item) => (item as any)?.aspectRatioAuto === false,
+                control: ControlType.NUMBER,
+                controlOptions: { step: 0.1 },
+
+                valueToItem: (value) => ({ layout: { aspectRatio: value } }),
+                itemToValue: (item) => item?.layout.aspectRatio ?? '',
+            },
+            {
+                id: 'size',
+                control: ControlType.VECTOR2,
+
+                valueToItem: (value) => ({ layout: { size: value } }),
+                itemToValue: (item) => item?.layout.size ?? '',
+            },
+            {
+                id: 'maxSize',
+                control: ControlType.VECTOR2,
+
+                valueToItem: (value) => ({ layout: { maxSize: value } }),
+                itemToValue: (item) => item?.layout.maxSize ?? '',
+            },
+            {
+                id: 'minSize',
+                control: ControlType.VECTOR2,
+
+                valueToItem: (value) => ({ layout: { minSize: value } }),
+                itemToValue: (item) => item?.layout.minSize ?? '',
             },
         ],
     },

@@ -444,10 +444,10 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.width = item.width;
         pixiObject.height = item.height;
 
-        pixiObject.topHeight = item.topHeight;
-        pixiObject.rightWidth = item.rightWidth;
-        pixiObject.bottomHeight = item.bottomHeight;
-        pixiObject.leftWidth = item.leftWidth;
+        pixiObject.topHeight = item.nineSliceSize.top;
+        pixiObject.rightWidth = item.nineSliceSize.right;
+        pixiObject.bottomHeight = item.nineSliceSize.bottom;
+        pixiObject.leftWidth = item.nineSliceSize.left;
     }
 }
 

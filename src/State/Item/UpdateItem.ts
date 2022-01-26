@@ -1,6 +1,6 @@
 import { EditorState } from 'State/EditorState';
 import { Item } from 'State/Item';
-import { roundTo } from 'Utility/RoundTo';
+import { roundSides, roundTo } from 'Utility/RoundTo';
 
 export function updateItem(state: EditorState, id: string, partialItem: Partial<Item>): EditorState {
     return {
@@ -11,6 +11,11 @@ export function updateItem(state: EditorState, id: string, partialItem: Partial<
             partialItem.textStyle = {
                 ...item.textStyle,
                 ...partialItem.textStyle,
+            };
+
+            partialItem.layout = {
+                ...item.layout,
+                ...partialItem.layout,
             };
 
             item = {
@@ -27,10 +32,7 @@ export function updateItem(state: EditorState, id: string, partialItem: Partial<
 
             item.width = roundTo(item.width, 3);
             item.height = roundTo(item.height, 3);
-            item.topHeight = roundTo(item.topHeight, 3);
-            item.rightWidth = roundTo(item.rightWidth, 3);
-            item.leftWidth = roundTo(item.leftWidth, 3);
-            item.bottomHeight = roundTo(item.bottomHeight, 3);
+            item.nineSliceSize = roundSides(item.nineSliceSize, 3);
 
             return item;
         }),

@@ -6,7 +6,7 @@ export function copyItem(
     id: string,
     parent: string,
     position: number | undefined,
-    idMap: Record<string, string>,
+    idMap: Record<string, string>
 ): Item[] {
     const item = state.items.find((item) => item.id === id);
     if (item === undefined) return [];

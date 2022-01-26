@@ -5,7 +5,6 @@ import { initInspector } from 'Views/Inspector/InitInspector';
 import { initKeyboard } from 'Views/InitKeyboard';
 import { initSplit } from 'Views/InitSplit';
 import { initContextMenu } from 'Views/ContextMenu';
-import { initSettings } from 'Views/InitSettings';
 
 export function initView(state: EditorState) {
     initSplit();

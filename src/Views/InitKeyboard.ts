@@ -18,6 +18,9 @@ export function initKeyboard() {
         }
     };
     document.onkeydown = (e) => {
+        // Only if active element is body.
+        if (document.activeElement !== document.body) return;
+
         if (e.code === 'ArrowUp') {
             dispatch(translateAction(0, e.shiftKey ? -10 : -1));
         }

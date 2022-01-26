@@ -1,5 +1,4 @@
 import { getLabel } from 'Controls/GetLabel';
-import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
 import { Prop } from 'Views/Inspector/Prop';
@@ -7,7 +6,7 @@ import { Prop } from 'Views/Inspector/Prop';
 export function getSelectControl(prop: Prop<string>): Control {
     const options = $('<div class="btn-group btn-group-sm" role="group"></div>');
     prop.inputOptions?.forEach((option) => {
-        options.append(`<option value='${option.value}'>${option.value}</option>`);
+        options.append(`<option value='${option.value}'>${option.label ? option.label : option.value}</option>`);
     });
 
     const element = $(`
@@ -28,8 +27,6 @@ export function getSelectControl(prop: Prop<string>): Control {
             $(`#${prop.id}`).val(value);
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

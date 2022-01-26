@@ -1,4 +1,3 @@
-import { subscribe } from 'State/State';
 import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
 import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
@@ -17,20 +16,16 @@ export function getSidesControl(prop: Prop<Sides>): Control {
     const leftID = `${prop.id}-left`;
     const bottomID = `${prop.id}-bottom`;
 
-    const topInput =
-        $(`<input type='number' class='form-control form-control-sm' id='${topID}'
+    const topInput = $(`<input type='number' class='form-control form-control-sm' id='${topID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
-    const rightInput =
-        $(`<input type='number' class='form-control form-control-sm' id='${rightID}'
+    const rightInput = $(`<input type='number' class='form-control form-control-sm' id='${rightID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
-    const leftInput =
-        $(`<input type='number' class='form-control form-control-sm' id='${leftID}'
+    const leftInput = $(`<input type='number' class='form-control form-control-sm' id='${leftID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
-    const bottomInput =
-        $(`<input type='number' class='form-control form-control-sm' id='${bottomID}'
+    const bottomInput = $(`<input type='number' class='form-control form-control-sm' id='${bottomID}'
             ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>`);
 
     const element = $(`
@@ -38,14 +33,14 @@ export function getSidesControl(prop: Prop<Sides>): Control {
     <label for='${topID}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
         <div class='row justify-content-around'>
-            <div class='w-50 input-group-sm'>${topInput.prop("outerHTML")}</div>
+            <div class='w-50 input-group-sm'>${topInput.prop('outerHTML')}</div>
         </div>
         <div class='row justify-content-between'>
-            <div class='w-50 input-group-sm'>${leftInput.prop("outerHTML")}</div>
-            <div class='w-50 input-group-sm'>${rightInput.prop("outerHTML")}</div>
+            <div class='w-50 input-group-sm'>${leftInput.prop('outerHTML')}</div>
+            <div class='w-50 input-group-sm'>${rightInput.prop('outerHTML')}</div>
         </div>
         <div class='row justify-content-around'>
-            <div class='w-50 input-group-sm'>${bottomInput.prop("outerHTML")}</div>
+            <div class='w-50 input-group-sm'>${bottomInput.prop('outerHTML')}</div>
         </div>
     </div>
 </div>
@@ -64,8 +59,6 @@ export function getSidesControl(prop: Prop<Sides>): Control {
             $(`#${bottomID}`).val(value?.bottom ?? '');
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

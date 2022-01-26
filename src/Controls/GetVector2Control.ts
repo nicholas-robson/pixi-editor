@@ -1,4 +1,3 @@
-import { subscribe } from 'State/State';
 import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
 import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
@@ -33,8 +32,6 @@ export function getVector2Control(prop: Prop<Vector2>): Control {
             $(`#${yID}`).val(((value as Vector2)?.y as number) ?? '');
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

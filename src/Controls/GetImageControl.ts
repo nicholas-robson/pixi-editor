@@ -1,4 +1,3 @@
-import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
 import { getLabel } from 'Controls/GetLabel';
@@ -25,8 +24,6 @@ export function getImageControl(prop: Prop<string>): Control {
             $(`#image-${prop.id}`).attr('src', value ? getTextureData(value) ?? '' : '');
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

@@ -1,4 +1,3 @@
-import { subscribe } from 'State/State';
 import { getLabel } from 'Controls/GetLabel';
 import $ from 'jquery';
 import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
@@ -22,8 +21,6 @@ export function getNumberControl(prop: Prop<number>): Control {
             $(`#${prop.id}`).val(value ?? '');
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

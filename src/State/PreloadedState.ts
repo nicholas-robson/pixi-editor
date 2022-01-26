@@ -6,13 +6,13 @@ import { normalizeIndexes } from 'State/Item/NormalizeIndexes';
 export const preloadedState: EditorState = normalizeIndexes({
     undo: [],
     redo: [],
-    focus: { itemID: "text_1" },
+    focus: { itemID: 'text_1' },
     viewport: {
-        x : 0,
-        y : 0,
+        x: 0,
+        y: 0,
         width: 800,
         height: 600,
-        zoom : 1,
+        zoom: 1,
     },
     items: [
         // getItem({
@@ -39,10 +39,7 @@ export const preloadedState: EditorState = normalizeIndexes({
             type: PixiType.NINE_SLICE,
             texture: 'nine-slice-test.png',
             position: { x: 200, y: 100 },
-            topHeight: 30,
-            leftWidth: 25,
-            rightWidth: 25,
-            bottomHeight: 45,
+            nineSliceSize: { top: 30, left: 25, right: 25, bottom: 45 },
             width: 350,
             height: 350,
         }),

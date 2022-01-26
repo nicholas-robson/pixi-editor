@@ -1,5 +1,4 @@
 import { getLabel } from 'Controls/GetLabel';
-import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
 import { Prop } from 'Views/Inspector/Prop';
@@ -10,9 +9,7 @@ export function getColorControl(prop: Prop<number>): Control {
     <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
 <!--        <label for='${prop.id}' class='float-start'><i class='bi bi-palette'></i></label>-->
-        <input type='color' class='form-control form-control-sm' id='${
-            prop.id
-        }' placeholder='#563d7c' value='#563d7c'>
+        <input type='color' class='form-control form-control-sm' id='${prop.id}' placeholder='#563d7c' value='#563d7c'>
     </div>
 </div>
     `);
@@ -24,8 +21,6 @@ export function getColorControl(prop: Prop<number>): Control {
             $(`#${prop.id}`).val(`#${value?.toString(16)}` ?? '');
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

@@ -6,7 +6,7 @@ export function createItem(state: EditorState, item: Partial<Item>): { state: Ed
     const newItem = getItem(item);
 
     // Push to end of children.
-    newItem.childIndex = state.items.filter(i => i.parent === newItem.parent).length;
+    newItem.childIndex = state.items.filter((i) => i.parent === newItem.parent).length;
 
     return {
         state: {

@@ -1,8 +1,8 @@
 import { getLabel } from 'Controls/GetLabel';
-import { subscribe } from 'State/State';
 import $ from 'jquery';
 import { Control, getSelector, onChange } from 'Controls/Controls';
 import { Prop } from 'Views/Inspector/Prop';
+import { camelCaseToTitle } from 'Controls/CamelCaseToTitle';
 
 export function getRadioButtonsControl(prop: Prop<string>): Control {
     const inputs = $(
@@ -14,7 +14,13 @@ export function getRadioButtonsControl(prop: Prop<string>): Control {
                 autocomplete="off" value='${option.value}' ${prop.controlOptions?.readonly ? 'readonly' : ''}>
             <label class="btn btn-outline-light" for="option-${prop.id}-${option.value}"><i class='bi ${
             option.icon
-        }'></i>${option.label ?? ''}</label>
+        }'></i>${
+            option.label
+                ? option.label
+                : option.icon || typeof option.value !== 'string'
+                ? ''
+                : camelCaseToTitle(option.value as string)
+        }</label>
             
         `);
     });
@@ -39,8 +45,6 @@ export function getRadioButtonsControl(prop: Prop<string>): Control {
             $(id).prop('checked', true);
         }
     });
-
-    subscribe(selector);
 
     return {
         element,

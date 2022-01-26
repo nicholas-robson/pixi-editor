@@ -3,7 +3,7 @@ import { copyItem } from 'State/Item/CopyItem';
 
 export function duplicateItem(
     state: EditorState,
-    { id, position, parent, idMap }: { id: string; position: number; parent: string; idMap: Record<string, string> },
+    { id, position, parent, idMap }: { id: string; position: number; parent: string; idMap: Record<string, string> }
 ): EditorState {
     const newItems = copyItem(state, id, parent, position, idMap);
 
