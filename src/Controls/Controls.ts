@@ -9,6 +9,8 @@ export type ControlOptions = {
     label?: string;
     step?: number;
     readonly?: boolean;
+    allowEmpty?: boolean;
+    placeholder?: string;
 };
 
 export type Control = {

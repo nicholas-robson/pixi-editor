@@ -2,6 +2,8 @@ import { Vector2 } from 'Utility/Vector2';
 import { PixiType } from 'State/PixiType';
 import { TextStyle } from 'State/TextStyle';
 import { Sides } from 'Utility/Sides';
+import { Flex } from 'pixi-flex';
+import { DeepPartial } from 'redux';
 
 export type Item = {
     id: string;
@@ -41,8 +43,8 @@ export type Item = {
     //
 
     // Layout
-    enableLayout: boolean;
-    layout: Layout;
+    flexEnabled: boolean;
+    flex: DeepPartial<Flex>;
     //
 
     childIndex: number;
@@ -53,52 +55,4 @@ export type Item = {
         inspectorScrollY: number;
         closeTabs: string[];
     };
-};
-
-export type Layout = {
-    flex?: 'inherit' | 'ltr' | 'rtl';
-    flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
-    basisAuto?: boolean;
-    basis?: number;
-    grow?: number;
-    shrink?: number;
-    flexWrap?: 'no-wrap' | 'wrap' | 'wrap-reverse';
-    justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
-    alignItems?:
-        | 'auto'
-        | 'flex-start'
-        | 'center'
-        | 'flex-end'
-        | 'stretch'
-        | 'baseline'
-        | 'space-between'
-        | 'space-around';
-    alignSelf?:
-        | 'auto'
-        | 'flex-start'
-        | 'center'
-        | 'flex-end'
-        | 'stretch'
-        | 'baseline'
-        | 'space-between'
-        | 'space-around';
-    alignContent?:
-        | 'auto'
-        | 'flex-start'
-        | 'center'
-        | 'flex-end'
-        | 'stretch'
-        | 'baseline'
-        | 'space-between'
-        | 'space-around';
-    positionType?: 'relative' | 'absolute';
-    absolutePosition?: Sides;
-    margin?: Sides;
-    padding?: Sides;
-    border?: Sides;
-    aspectRatioAuto?: number;
-    aspectRatio?: number;
-    size?: Vector2;
-    maxSize?: Vector2;
-    minSize?: Vector2;
 };

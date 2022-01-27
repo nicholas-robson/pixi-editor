@@ -1,19 +1,4 @@
 import { dispatch, getState, subscribe } from 'State/State';
-import {
-    Application,
-    Container,
-    DisplayObject,
-    Graphics,
-    InteractionEvent,
-    NineSlicePlane,
-    ParticleRenderer,
-    Point,
-    Renderer,
-    Sprite,
-    Text,
-    Texture,
-} from 'pixi.js';
-import { InteractionManager } from '@pixi/interaction';
 import { createSelector } from 'reselect';
 import { Viewport } from 'pixi-viewport';
 import { drawGrid } from 'Views/PixiApp/Grid';
@@ -23,8 +8,21 @@ import { Transformer } from '@pixi-essentials/transformer';
 import { Item } from 'State/Item';
 import { EditorState } from 'State/EditorState';
 import { PixiType } from 'State/PixiType';
+import {
+    Application,
+    Container,
+    Graphics,
+    InteractionEvent,
+    NineSlicePlane,
+    Point,
+    Renderer,
+    Sprite,
+    Text,
+    Texture,
+} from 'pixi.js';
+import { FlexManager, defaultFlex } from 'pixi-flex';
 
-type PixiObject = Container & { id: string };
+type PixiObject = Container;
 
 let viewport: Viewport;
 const pixiObjects: PixiObject[] = [];
@@ -51,8 +49,9 @@ export function getTextureData(key: string) {
 }
 
 export function initApp(state: EditorState) {
-    Renderer.registerPlugin('particle', ParticleRenderer);
-    Renderer.registerPlugin('interaction', InteractionManager);
+    // Renderer.registerPlugin('particle', ParticleRenderer);
+    // Renderer.registerPlugin('interaction', InteractionManager);
+    Renderer.registerPlugin('flex', FlexManager);
 
     const canvas = document.getElementById('canvas-container') as HTMLCanvasElement;
     if (canvas === null) throw new Error('Canvas not found!');
@@ -285,7 +284,7 @@ export function initApp(state: EditorState) {
             const removed = pixiIDs.filter((id) => !state.items.map((item) => item.id).includes(id));
             removed.forEach((id) => {
                 const obj = pixiObjects.find((obj) => obj.id === id);
-                if (obj !== undefined && obj.destroyed === false) {
+                if (obj !== undefined && (obj as any).destroyed === false) {
                     obj.destroy({ children: true });
                     pixiObjects.splice(pixiObjects.indexOf(obj), 1);
                 }
@@ -439,7 +438,7 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.anchor.set(item.anchor.x, item.anchor.y);
     } else if (pixiObject instanceof NineSlicePlane) {
         setTexture(pixiObject, item.texture);
-        pixiObject.tint = item.tint;
+        (pixiObject as any).tint = item.tint;
 
         pixiObject.width = item.width;
         pixiObject.height = item.height;
@@ -449,6 +448,20 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.bottomHeight = item.nineSliceSize.bottom;
         pixiObject.leftWidth = item.nineSliceSize.left;
     }
+
+    pixiObject.flexEnabled = item.flexEnabled;
+
+    pixiObject.flex = {
+        ...defaultFlex,
+        ...item.flex,
+        padding: { ...defaultFlex.padding, ...item.flex.padding },
+        margin: { ...defaultFlex.margin, ...item.flex.margin },
+        absolutePosition: { ...defaultFlex.absolutePosition, ...item.flex.absolutePosition },
+        border: { ...defaultFlex.border, ...item.flex.border },
+        size: { ...defaultFlex.size, ...item.flex.size },
+        minSize: { ...defaultFlex.minSize, ...item.flex.minSize },
+        maxSize: { ...defaultFlex.maxSize, ...item.flex.maxSize },
+    };
 }
 
 async function setTexture(pixiObject: Sprite | NineSlicePlane, texturePath: string | null) {

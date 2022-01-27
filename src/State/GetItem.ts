@@ -1,6 +1,7 @@
 import { Item } from 'State/Item';
 import { nanoid } from '@reduxjs/toolkit';
 import { PixiType } from 'State/PixiType';
+import { defaultFlex } from '../../../pixi-flex';
 
 export function getItem(props: Partial<Item>): Item {
     props.id = props.id === undefined ? nanoid(10) : props.id;
@@ -53,9 +54,10 @@ export function getItem(props: Partial<Item>): Item {
         },
 
         // Layout
-        enableLayout: false,
-        layout: {
-            ...props.layout,
+        flexEnabled: false,
+        flex: {
+            ...defaultFlex,
+            ...props.flex,
         },
 
         childIndex: 0,

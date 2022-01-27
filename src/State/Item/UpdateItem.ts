@@ -13,9 +13,9 @@ export function updateItem(state: EditorState, id: string, partialItem: Partial<
                 ...partialItem.textStyle,
             };
 
-            partialItem.layout = {
-                ...item.layout,
-                ...partialItem.layout,
+            partialItem.flex = {
+                ...item.flex,
+                ...partialItem.flex,
             };
 
             item = {

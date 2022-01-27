@@ -9,7 +9,9 @@ export function getNumberControl(prop: Prop<number>): Control {
     <label for='${prop.id}' class='col-sm-4 col-form-label col-form-label-sm '>${getLabel(prop)}</label>
     <div class='col-sm-8'>
         <input type='number' class='form-control form-control-sm' id='${prop.id}'
-            ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>
+            ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}' placeholder='${
+        prop.controlOptions?.placeholder ?? ''
+    }'>
     </div>
 </div>
     `);
@@ -28,9 +30,11 @@ export function getNumberControl(prop: Prop<number>): Control {
             $(`#${prop.id}`).on('change', () => {
                 const value = $(`#${prop.id}`).val() as string;
 
-                if (!isNumeric(value)) return;
+                const numeric = isNumeric(value);
 
-                onChange(prop, parseFloat(value));
+                if ((!prop.controlOptions || !prop.controlOptions.allowEmpty) && !numeric) return;
+
+                onChange(prop, numeric ? parseFloat(value) : null);
             });
         },
         selector,

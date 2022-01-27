@@ -1,7 +1,7 @@
-import { Prop, PropGroup } from 'Views/Inspector/Prop';
+import { PropGroup } from 'Views/Inspector/Prop';
 import { ControlType } from 'Views/Inspector/ControlType';
 import { PixiType } from 'State/PixiType';
-import { Item, Layout } from 'State/Item';
+import { Align, Direction, FlexDirection, FlexWrap, JustifyContent, PositionType } from 'pixi-flex';
 
 const allTypes: PixiType[] = [
     PixiType.DISPLAY_OBJECT,
@@ -19,7 +19,7 @@ export const allProps: PropGroup[] = [
             { id: 'type', control: ControlType.STRING, controlOptions: { readonly: true } },
             { id: 'id', control: ControlType.STRING, controlOptions: { readonly: true } },
             { id: 'name', control: ControlType.STRING },
-            { id: 'layoutEnabled', control: ControlType.BOOLEAN },
+            { id: 'flexEnabled', control: ControlType.BOOLEAN },
         ],
     },
     {
@@ -327,198 +327,198 @@ export const allProps: PropGroup[] = [
     {
         id: 'flex',
         types: allTypes,
-        condition: (item) => item !== undefined && (item as any).layoutEnabled,
+        condition: (item) => item !== undefined && (item as any).flexEnabled,
         props: [
             {
-                id: 'flex',
+                id: 'direction',
                 control: ControlType.RADIOBUTTONS,
                 inputOptions: [
-                    { value: 'inherit', label: 'inherit' },
-                    { value: 'ltr', label: 'ltr' },
-                    { value: 'rtl', label: 'rtl' },
+                    { value: Direction.inherit, label: 'inherit' },
+                    { value: Direction.ltr, label: 'ltr' },
+                    { value: Direction.rtl, label: 'rtl' },
                 ],
-                valueToItem: (value) => ({ layout: { flex: value } }),
-                itemToValue: (item) => item?.layout.flex ?? '',
+                valueToItem: (value) => ({ flex: { direction: value } }),
+                itemToValue: (item) => item?.flex.direction ?? '',
             },
             {
                 id: 'flexDirection',
                 control: ControlType.SELECT,
                 inputOptions: [
-                    { value: 'row' },
-                    { value: 'row-reverse' },
-                    { value: 'column' },
-                    { value: 'column-reverse' },
+                    { value: FlexDirection.row, label: 'row' },
+                    { value: FlexDirection.row_reverse, label: 'row_reverse' },
+                    { value: FlexDirection.column, label: 'column' },
+                    { value: FlexDirection.column_reverse, label: 'column_reverse' },
                 ],
-                valueToItem: (value) => ({ layout: { flexDirection: value } }),
-                itemToValue: (item) => item?.layout.flexDirection ?? '',
-            },
-            {
-                id: 'basisAuto',
-                control: ControlType.BOOLEAN,
-
-                valueToItem: (value) => ({ layout: { basisAuto: value } }),
-                itemToValue: (item) => item?.layout.basisAuto ?? '',
+                valueToItem: (value) => ({ flex: { flexDirection: value } }),
+                itemToValue: (item) => item?.flex.flexDirection ?? '',
             },
             {
                 id: 'basis',
-                condition: (item) => (item as any)?.basisAuto === false,
                 control: ControlType.NUMBER,
-
-                valueToItem: (value) => ({ layout: { basis: value } }),
-                itemToValue: (item) => item?.layout.basis ?? '',
+                controlOptions: {
+                    placeholder: 'auto',
+                    allowEmpty: true,
+                },
+                valueToItem: (value) => ({ flex: { basis: value } }),
+                itemToValue: (item) => item?.flex.basis ?? '',
             },
             {
                 id: 'grow',
                 control: ControlType.NUMBER,
 
-                valueToItem: (value) => ({ layout: { grow: value } }),
-                itemToValue: (item) => item?.layout.grow ?? '',
+                valueToItem: (value) => ({ flex: { grow: value } }),
+                itemToValue: (item) => item?.flex.grow ?? '',
             },
             {
                 id: 'shrink',
                 control: ControlType.NUMBER,
 
-                valueToItem: (value) => ({ layout: { shrink: value } }),
-                itemToValue: (item) => item?.layout.shrink ?? '',
+                valueToItem: (value) => ({ flex: { shrink: value } }),
+                itemToValue: (item) => item?.flex.shrink ?? '',
             },
             {
                 id: 'flexWrap',
                 control: ControlType.RADIOBUTTONS,
-                inputOptions: [{ value: 'no-wrap' }, { value: 'wrap' }, { value: 'wrap-reverse' }],
-
-                valueToItem: (value) => ({ layout: { flexWrap: value } }),
-                itemToValue: (item) => item?.layout.flexWrap ?? '',
+                inputOptions: [
+                    { value: FlexWrap.no_wrap, label: 'no-wrap' },
+                    { value: FlexWrap.wrap, label: 'wrap' },
+                    { value: FlexWrap.wrap_reverse, label: 'wrap-reverse' },
+                ],
+                valueToItem: (value) => ({ flex: { flexWrap: value } }),
+                itemToValue: (item) => item?.flex.flexWrap ?? '',
             },
         ],
     },
     {
         id: 'alignment',
         types: allTypes,
-        condition: (item) => item !== undefined && (item as any).layoutEnabled,
+        condition: (item) => item !== undefined && (item as any).flexEnabled,
         props: [
             {
                 id: 'justifyContent',
                 control: ControlType.SELECT,
                 inputOptions: [
-                    { value: 'flex-start', label: 'flex start' },
-                    { value: 'center', label: 'center' },
-                    { value: 'flex-end', label: 'flex end' },
-                    { value: 'space-between', label: 'space between' },
-                    { value: 'space-around', label: 'space around' },
-                    { value: 'space-evenly', label: 'space evenly' },
+                    { value: JustifyContent.flex_start, label: 'flex start' },
+                    { value: JustifyContent.center, label: 'center' },
+                    { value: JustifyContent.flex_end, label: 'flex end' },
+                    { value: JustifyContent.space_between, label: 'space between' },
+                    { value: JustifyContent.space_around, label: 'space around' },
+                    { value: JustifyContent.space_evenly, label: 'space evenly' },
                 ],
 
-                valueToItem: (value) => ({ layout: { justifyContent: value } }),
-                itemToValue: (item) => item?.layout.justifyContent ?? '',
+                valueToItem: (value) => ({ flex: { justifyContent: value } }),
+                itemToValue: (item) => item?.flex.justifyContent ?? '',
             },
             {
                 id: 'alignItems',
                 control: ControlType.SELECT,
                 inputOptions: [
-                    { value: 'auto', label: 'auto' },
-                    { value: 'flex-start', label: 'flex start' },
-                    { value: 'center', label: 'center' },
-                    { value: 'flex-end', label: 'flex end' },
-                    { value: 'stretch', label: 'stretch' },
-                    { value: 'baseline', label: 'baseline' },
-                    { value: 'space-between', label: 'space between' },
-                    { value: 'space-around', label: 'space around' },
+                    { value: Align.auto, label: 'auto' },
+                    { value: Align.flex_start, label: 'flex start' },
+                    { value: Align.center, label: 'center' },
+                    { value: Align.flex_end, label: 'flex end' },
+                    { value: Align.stretch, label: 'stretch' },
+                    { value: Align.baseline, label: 'baseline' },
+                    { value: Align.space_between, label: 'space between' },
+                    { value: Align.space_around, label: 'space around' },
                 ],
 
-                valueToItem: (value) => ({ layout: { alignItems: value } }),
-                itemToValue: (item) => item?.layout.alignItems ?? '',
+                valueToItem: (value) => ({ flex: { alignItems: value } }),
+                itemToValue: (item) => item?.flex.alignItems ?? '',
             },
             {
                 id: 'alignSelf',
                 control: ControlType.SELECT,
                 inputOptions: [
-                    { value: 'auto', label: 'auto' },
-                    { value: 'flex-start', label: 'flex start' },
-                    { value: 'center', label: 'center' },
-                    { value: 'flex-end', label: 'flex end' },
-                    { value: 'stretch', label: 'stretch' },
-                    { value: 'baseline', label: 'baseline' },
-                    { value: 'space-between', label: 'space between' },
-                    { value: 'space-around', label: 'space around' },
+                    { value: Align.auto, label: 'auto' },
+                    { value: Align.flex_start, label: 'flex start' },
+                    { value: Align.center, label: 'center' },
+                    { value: Align.flex_end, label: 'flex end' },
+                    { value: Align.stretch, label: 'stretch' },
+                    { value: Align.baseline, label: 'baseline' },
+                    { value: Align.space_between, label: 'space between' },
+                    { value: Align.space_around, label: 'space around' },
                 ],
 
-                valueToItem: (value) => ({ layout: { alignSelf: value } }),
-                itemToValue: (item) => item?.layout.alignSelf ?? '',
+                valueToItem: (value) => ({ flex: { alignSelf: value } }),
+                itemToValue: (item) => item?.flex.alignSelf ?? '',
             },
             {
                 id: 'alignContent',
                 control: ControlType.SELECT,
                 inputOptions: [
-                    { value: 'auto', label: 'auto' },
-                    { value: 'flex-start', label: 'flex start' },
-                    { value: 'center', label: 'center' },
-                    { value: 'flex-end', label: 'flex end' },
-                    { value: 'stretch', label: 'stretch' },
-                    { value: 'baseline', label: 'baseline' },
-                    { value: 'space-between', label: 'space between' },
-                    { value: 'space-around', label: 'space around' },
+                    { value: Align.auto, label: 'auto' },
+                    { value: Align.flex_start, label: 'flex start' },
+                    { value: Align.center, label: 'center' },
+                    { value: Align.flex_end, label: 'flex end' },
+                    { value: Align.stretch, label: 'stretch' },
+                    { value: Align.baseline, label: 'baseline' },
+                    { value: Align.space_between, label: 'space between' },
+                    { value: Align.space_around, label: 'space around' },
                 ],
 
-                valueToItem: (value) => ({ layout: { alignContent: value } }),
-                itemToValue: (item) => item?.layout.alignContent ?? '',
+                valueToItem: (value) => ({ flex: { alignContent: value } }),
+                itemToValue: (item) => item?.flex.alignContent ?? '',
             },
         ],
     },
     {
         id: 'layout',
         types: allTypes,
-        condition: (item) => item !== undefined && (item as any).layoutEnabled,
+        condition: (item) => item !== undefined && (item as any).flexEnabled,
         props: [
             {
                 id: 'positionType',
                 control: ControlType.RADIOBUTTONS,
                 inputOptions: [
                     {
-                        value: 'relative',
+                        value: PositionType.relative,
+                        label: 'relative',
                     },
                     {
-                        value: 'absolute',
+                        value: PositionType.absolute,
+                        label: 'absolute',
                     },
                 ],
 
-                valueToItem: (value) => ({ layout: { positionType: value } }),
-                itemToValue: (item) => item?.layout.positionType ?? '',
+                valueToItem: (value) => ({ flex: { positionType: value } }),
+                itemToValue: (item) => item?.flex.positionType ?? '',
             },
             {
                 id: 'absolutePosition',
                 condition: (item) => (item as any)?.positionType === 'absolute',
                 control: ControlType.SIDES,
 
-                valueToItem: (value) => ({ layout: { absolutePosition: value } }),
-                itemToValue: (item) => item?.layout.absolutePosition ?? '',
+                valueToItem: (value) => ({ flex: { absolutePosition: value } }),
+                itemToValue: (item) => item?.flex.absolutePosition ?? '',
             },
             {
                 id: 'margin',
                 control: ControlType.SIDES,
 
-                valueToItem: (value) => ({ layout: { margin: value } }),
-                itemToValue: (item) => item?.layout.margin ?? '',
+                valueToItem: (value) => ({ flex: { margin: value } }),
+                itemToValue: (item) => item?.flex.margin ?? '',
             },
             {
                 id: 'padding',
                 control: ControlType.SIDES,
 
-                valueToItem: (value) => ({ layout: { padding: value } }),
-                itemToValue: (item) => item?.layout.padding ?? '',
+                valueToItem: (value) => ({ flex: { padding: value } }),
+                itemToValue: (item) => item?.flex.padding ?? '',
             },
             {
                 id: 'border',
                 control: ControlType.SIDES,
 
-                valueToItem: (value) => ({ layout: { border: value } }),
-                itemToValue: (item) => item?.layout.border ?? '',
+                valueToItem: (value) => ({ flex: { border: value } }),
+                itemToValue: (item) => item?.flex.border ?? '',
             },
             {
                 id: 'aspectRatioAuto',
                 control: ControlType.BOOLEAN,
 
-                valueToItem: (value) => ({ layout: { aspectRatioAuto: value } }),
-                itemToValue: (item) => item?.layout.aspectRatioAuto ?? '',
+                valueToItem: (value) => ({ flex: { aspectRatioAuto: value } }),
+                itemToValue: (item) => item?.flex.aspectRatioAuto ?? '',
             },
             {
                 id: 'aspectRatio',
@@ -526,29 +526,29 @@ export const allProps: PropGroup[] = [
                 control: ControlType.NUMBER,
                 controlOptions: { step: 0.1 },
 
-                valueToItem: (value) => ({ layout: { aspectRatio: value } }),
-                itemToValue: (item) => item?.layout.aspectRatio ?? '',
+                valueToItem: (value) => ({ flex: { aspectRatio: value } }),
+                itemToValue: (item) => item?.flex.aspectRatio ?? '',
             },
             {
                 id: 'size',
                 control: ControlType.VECTOR2,
 
-                valueToItem: (value) => ({ layout: { size: value } }),
-                itemToValue: (item) => item?.layout.size ?? '',
+                valueToItem: (value) => ({ flex: { size: value } }),
+                itemToValue: (item) => item?.flex.size ?? '',
             },
             {
                 id: 'maxSize',
                 control: ControlType.VECTOR2,
 
-                valueToItem: (value) => ({ layout: { maxSize: value } }),
-                itemToValue: (item) => item?.layout.maxSize ?? '',
+                valueToItem: (value) => ({ flex: { maxSize: value } }),
+                itemToValue: (item) => item?.flex.maxSize ?? '',
             },
             {
                 id: 'minSize',
                 control: ControlType.VECTOR2,
 
-                valueToItem: (value) => ({ layout: { minSize: value } }),
-                itemToValue: (item) => item?.layout.minSize ?? '',
+                valueToItem: (value) => ({ flex: { minSize: value } }),
+                itemToValue: (item) => item?.flex.minSize ?? '',
             },
         ],
     },
