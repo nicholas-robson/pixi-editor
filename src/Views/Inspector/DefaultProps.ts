@@ -1,7 +1,7 @@
 import { PropGroup } from 'Views/Inspector/Prop';
 import { ControlType } from 'Views/Inspector/ControlType';
 import { PixiType } from 'State/PixiType';
-import { Align, Direction, FlexDirection, FlexWrap, JustifyContent, PositionType } from 'pixi-flex';
+import { Align, FlexDirection, FlexWrap, JustifyContent, PositionType } from 'pixi-flex';
 
 const allTypes: PixiType[] = [
     PixiType.DISPLAY_OBJECT,
@@ -329,17 +329,17 @@ export const allProps: PropGroup[] = [
         types: allTypes,
         condition: (item) => item !== undefined && (item as any).flexEnabled,
         props: [
-            {
-                id: 'direction',
-                control: ControlType.RADIOBUTTONS,
-                inputOptions: [
-                    { value: Direction.inherit, label: 'inherit' },
-                    { value: Direction.ltr, label: 'ltr' },
-                    { value: Direction.rtl, label: 'rtl' },
-                ],
-                valueToItem: (value) => ({ flex: { direction: value } }),
-                itemToValue: (item) => item?.flex.direction ?? '',
-            },
+            // {
+            //     id: 'direction',
+            //     control: ControlType.RADIOBUTTONS,
+            //     inputOptions: [
+            //         { value: Direction.inherit, label: 'inherit' },
+            //         { value: Direction.ltr, label: 'ltr' },
+            //         { value: Direction.rtl, label: 'rtl' },
+            //     ],
+            //     valueToItem: (value) => ({ flex: { dir: value } }),
+            //     itemToValue: (item) => item?.flex.flexDirection ?? '',
+            // },
             {
                 id: 'flexDirection',
                 control: ControlType.SELECT,
@@ -359,22 +359,22 @@ export const allProps: PropGroup[] = [
                     placeholder: 'auto',
                     allowEmpty: true,
                 },
-                valueToItem: (value) => ({ flex: { basis: value } }),
-                itemToValue: (item) => item?.flex.basis ?? '',
+                valueToItem: (value) => ({ flex: { flexBasis: value } }),
+                itemToValue: (item) => item?.flex.flexBasis ?? '',
             },
             {
                 id: 'grow',
                 control: ControlType.NUMBER,
-
-                valueToItem: (value) => ({ flex: { grow: value } }),
-                itemToValue: (item) => item?.flex.grow ?? '',
+                controlOptions: { placeholder: '0' },
+                valueToItem: (value) => ({ flex: { flexGrow: value } }),
+                itemToValue: (item) => item?.flex.flexGrow ?? '',
             },
             {
                 id: 'shrink',
                 control: ControlType.NUMBER,
-
-                valueToItem: (value) => ({ flex: { shrink: value } }),
-                itemToValue: (item) => item?.flex.shrink ?? '',
+                controlOptions: { placeholder: '1' },
+                valueToItem: (value) => ({ flex: { flexShrink: value } }),
+                itemToValue: (item) => item?.flex.flexShrink ?? '',
             },
             {
                 id: 'flexWrap',
@@ -481,50 +481,92 @@ export const allProps: PropGroup[] = [
                     },
                 ],
 
-                valueToItem: (value) => ({ flex: { positionType: value } }),
+                valueToItem: (value) => ({ flex: { positionType: parseInt(value) as any } }),
                 itemToValue: (item) => item?.flex.positionType ?? '',
             },
             {
                 id: 'absolutePosition',
-                condition: (item) => (item as any)?.positionType === 'absolute',
+                condition: (item) => item?.flex.positionType === PositionType.absolute,
                 control: ControlType.SIDES,
-
-                valueToItem: (value) => ({ flex: { absolutePosition: value } }),
-                itemToValue: (item) => item?.flex.absolutePosition ?? '',
+                controlOptions: {
+                    allowEmpty: true,
+                },
+                valueToItem: (value) => ({
+                    flex: {
+                        top: value.top,
+                        bottom: value.bottom,
+                        left: value.left,
+                        right: value.right,
+                    },
+                }),
+                itemToValue: (item) => ({
+                    top: item?.flex.top,
+                    bottom: item?.flex.bottom,
+                    left: item?.flex.left,
+                    right: item?.flex.right,
+                }),
             },
             {
                 id: 'margin',
                 control: ControlType.SIDES,
 
-                valueToItem: (value) => ({ flex: { margin: value } }),
-                itemToValue: (item) => item?.flex.margin ?? '',
+                valueToItem: (value) => ({
+                    flex: {
+                        marginLeft: value.left,
+                        marginRight: value.right,
+                        marginTop: value.top,
+                        marginBottom: value.bottom,
+                    },
+                }),
+                itemToValue: (item) => ({
+                    top: item?.flex.marginTop,
+                    bottom: item?.flex.marginBottom,
+                    left: item?.flex.marginLeft,
+                    right: item?.flex.marginRight,
+                }),
             },
             {
                 id: 'padding',
                 control: ControlType.SIDES,
 
-                valueToItem: (value) => ({ flex: { padding: value } }),
-                itemToValue: (item) => item?.flex.padding ?? '',
+                valueToItem: (value) => ({
+                    flex: {
+                        paddingLeft: value.left,
+                        paddingRight: value.right,
+                        paddingTop: value.top,
+                        paddingBottom: value.bottom,
+                    },
+                }),
+                itemToValue: (item) => ({
+                    top: item?.flex.paddingTop,
+                    bottom: item?.flex.paddingBottom,
+                    left: item?.flex.paddingLeft,
+                    right: item?.flex.paddingRight,
+                }),
             },
             {
                 id: 'border',
                 control: ControlType.SIDES,
 
-                valueToItem: (value) => ({ flex: { border: value } }),
-                itemToValue: (item) => item?.flex.border ?? '',
-            },
-            {
-                id: 'aspectRatioAuto',
-                control: ControlType.BOOLEAN,
-
-                valueToItem: (value) => ({ flex: { aspectRatioAuto: value } }),
-                itemToValue: (item) => item?.flex.aspectRatioAuto ?? '',
+                valueToItem: (value) => ({
+                    flex: {
+                        borderLeft: value.left,
+                        borderRight: value.right,
+                        borderTop: value.top,
+                        borderBottom: value.bottom,
+                    },
+                }),
+                itemToValue: (item) => ({
+                    top: item?.flex.borderTop,
+                    bottom: item?.flex.borderBottom,
+                    left: item?.flex.borderLeft,
+                    right: item?.flex.borderRight,
+                }),
             },
             {
                 id: 'aspectRatio',
-                condition: (item) => (item as any)?.aspectRatioAuto === false,
                 control: ControlType.NUMBER,
-                controlOptions: { step: 0.1 },
+                controlOptions: { step: 0.1, placeholder: 'auto' },
 
                 valueToItem: (value) => ({ flex: { aspectRatio: value } }),
                 itemToValue: (item) => item?.flex.aspectRatio ?? '',
@@ -532,23 +574,41 @@ export const allProps: PropGroup[] = [
             {
                 id: 'size',
                 control: ControlType.VECTOR2,
-
-                valueToItem: (value) => ({ flex: { size: value } }),
-                itemToValue: (item) => item?.flex.size ?? '',
+                controlOptions: {
+                    allowEmpty: true,
+                    placeholder: 'auto',
+                },
+                valueToItem: (value) => ({ flex: { width: value.x, height: value.y } }),
+                itemToValue: (item) => ({
+                    x: item?.flex.width,
+                    y: item?.flex.height,
+                }),
             },
             {
                 id: 'maxSize',
                 control: ControlType.VECTOR2,
-
-                valueToItem: (value) => ({ flex: { maxSize: value } }),
-                itemToValue: (item) => item?.flex.maxSize ?? '',
+                controlOptions: {
+                    allowEmpty: true,
+                    placeholder: 'none',
+                },
+                valueToItem: (value) => ({ flex: { maxWidth: value.x, maxHeight: value.y } }),
+                itemToValue: (item) => ({
+                    x: item?.flex.maxWidth,
+                    y: item?.flex.maxHeight,
+                }),
             },
             {
                 id: 'minSize',
                 control: ControlType.VECTOR2,
-
-                valueToItem: (value) => ({ flex: { minSize: value } }),
-                itemToValue: (item) => item?.flex.minSize ?? '',
+                controlOptions: {
+                    allowEmpty: true,
+                    placeholder: '0',
+                },
+                valueToItem: (value) => ({ flex: { minWidth: value.x, minHeight: value.y } }),
+                itemToValue: (item) => ({
+                    x: item?.flex.minWidth,
+                    y: item?.flex.minHeight,
+                }),
             },
         ],
     },

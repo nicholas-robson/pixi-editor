@@ -13,8 +13,10 @@ export function initKeyboard() {
             }
         }
 
-        if (e.code === 'Delete') {
-            dispatch(deleteAction());
+        if (document.activeElement === document.body) {
+            if (e.code === 'Delete') {
+                dispatch(deleteAction());
+            }
         }
     };
     document.onkeydown = (e) => {

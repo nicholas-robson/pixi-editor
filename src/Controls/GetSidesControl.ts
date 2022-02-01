@@ -72,12 +72,22 @@ export function getSidesControl(prop: Prop<Sides>): Control {
 }
 
 function onSidesInput(prop: Prop<Sides>, topID: any, rightID: any, leftID: any, bottomID: any) {
-    const top = $(`#${topID}`).val();
-    const right = $(`#${rightID}`).val();
-    const left = $(`#${leftID}`).val();
-    const bottom = $(`#${bottomID}`).val();
+    let top = $(`#${topID}`).val();
+    let right = $(`#${rightID}`).val();
+    let left = $(`#${leftID}`).val();
+    let bottom = $(`#${bottomID}`).val();
 
-    if (!isNumeric(top) || !isNumeric(right) || !isNumeric(left) || !isNumeric(bottom)) return;
+    const topIsValid = (prop.controlOptions?.allowEmpty && top === '') || isNumeric(top);
+    const rightIsValid = (prop.controlOptions?.allowEmpty && right === '') || isNumeric(right);
+    const leftIsValid = (prop.controlOptions?.allowEmpty && left === '') || isNumeric(left);
+    const bottomIsValid = (prop.controlOptions?.allowEmpty && bottom === '') || isNumeric(bottom);
+
+    if (!topIsValid || !rightIsValid || !leftIsValid || !bottomIsValid) return;
+
+    if (top === '') top = undefined;
+    if (right === '') right = undefined;
+    if (left === '') left = undefined;
+    if (bottom === '') bottom = undefined;
 
     onChange(prop, { top, right, left, bottom });
 }

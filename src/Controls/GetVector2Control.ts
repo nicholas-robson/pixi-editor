@@ -3,7 +3,6 @@ import $ from 'jquery';
 import { Control, getSelector, isNumeric, onChange } from 'Controls/Controls';
 import { Vector2 } from 'Utility/Vector2';
 import { Prop } from 'Views/Inspector/Prop';
-import { Item } from 'State/Item';
 
 export function getVector2Control(prop: Prop<Vector2>): Control {
     const xID = `${prop.id}-x`;
@@ -15,9 +14,13 @@ export function getVector2Control(prop: Prop<Vector2>): Control {
     <div class='col-sm-8'>
     <div class='input-group input-group-sm'>
         <input type='number' class='form-control form-control-sm' id='${xID}'
-            ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>
+            ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}' placeholder='${
+        prop.controlOptions?.placeholder
+    }'>
         <input type='number' class='form-control form-control-sm' id='${yID}' 
-            ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}'>
+            ${prop.controlOptions?.readonly ? 'readonly' : ''} step='${prop.controlOptions?.step ?? 1}' placeholder='${
+        prop.controlOptions?.placeholder
+    }'>
     </div>
     </div>
 </div>
@@ -49,10 +52,16 @@ export function getVector2Control(prop: Prop<Vector2>): Control {
 }
 
 function onVector2Input(prop: Prop<Vector2>, idX: any, idY: any) {
-    const x = $(`#${idX}`).val() as Item['position']['x'];
-    const y = $(`#${idY}`).val() as Item['position']['y'];
+    let x = $(`#${idX}`).val();
+    let y = $(`#${idY}`).val();
 
-    if (!isNumeric(x) || !isNumeric(y)) return;
+    const xIsValid = (x === '' && prop.controlOptions?.allowEmpty) || isNumeric(x);
+    const yIsValid = (y === '' && prop.controlOptions?.allowEmpty) || isNumeric(y);
+
+    if (!xIsValid || !yIsValid) return;
+
+    if (x === "") x = undefined;
+    if (y === "") y = undefined;
 
     onChange(prop, { x, y });
 }

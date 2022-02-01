@@ -40,9 +40,9 @@ export function initInspector(state: EditorState) {
                 },
                 (show) => {
                     if (show) {
-                        $(`#control-${p.id}`).show();
+                        $(`#control-${p.id}`).slideDown(250);
                     } else {
-                        $(`#control-${p.id}`).hide();
+                        $(`#control-${p.id}`).slideUp(250);
                     }
                 }
             );

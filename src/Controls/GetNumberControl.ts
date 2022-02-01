@@ -34,7 +34,7 @@ export function getNumberControl(prop: Prop<number>): Control {
 
                 if ((!prop.controlOptions || !prop.controlOptions.allowEmpty) && !numeric) return;
 
-                onChange(prop, numeric ? parseFloat(value) : null);
+                onChange(prop, numeric ? parseFloat(value) : undefined);
             });
         },
         selector,

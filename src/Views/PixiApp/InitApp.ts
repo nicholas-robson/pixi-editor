@@ -8,9 +8,11 @@ import { Transformer } from '@pixi-essentials/transformer';
 import { Item } from 'State/Item';
 import { EditorState } from 'State/EditorState';
 import { PixiType } from 'State/PixiType';
+
 import {
     Application,
     Container,
+    DisplayObject,
     Graphics,
     InteractionEvent,
     NineSlicePlane,
@@ -20,12 +22,14 @@ import {
     Text,
     Texture,
 } from 'pixi.js';
-import { FlexManager, defaultFlex } from 'pixi-flex';
+import { defaultFlex, FlexManager, mixin, setFlex } from 'pixi-flex';
 
 type PixiObject = Container;
 
 let viewport: Viewport;
 const pixiObjects: PixiObject[] = [];
+
+DisplayObject.mixin(mixin);
 
 export function toLocal(x: number, y: number, parent: string | null) {
     if (parent !== null) {
@@ -95,7 +99,6 @@ export function initApp(state: EditorState) {
                 mouseButtons: 'left-middle',
             });
         }
-        //console.log(e.code);
         if ((e.code === 'ShiftLeft' || e.code === 'ShiftRight') && !shiftDown) {
             shiftDown = true;
             transformer.lockAspectRatio = true;
@@ -310,6 +313,12 @@ export function initApp(state: EditorState) {
                 if (newParent.getChildIndex(obj) !== item.childIndex) {
                     newParent.setChildIndex(obj, item.childIndex);
                 }
+
+                // Resize after updates.
+                if (item.flexEnabled && obj.node?.getParent() === null) {
+                    console.log("updating node for:", obj.id, obj.node);
+                    obj.updateNode(obj.width, obj.height, false);
+                }
             });
 
             const selected = state.items
@@ -449,19 +458,28 @@ function updatePixiObject(pixiObject: PixiObject, item: Item, pixiObjects: PixiO
         pixiObject.leftWidth = item.nineSliceSize.left;
     }
 
-    pixiObject.flexEnabled = item.flexEnabled;
+    if (item.flexEnabled) {
+        if (pixiObject.node === undefined) {
+            pixiObject.addNode(item.flex.originX, item.flex.originY);
+        }
 
-    pixiObject.flex = {
-        ...defaultFlex,
-        ...item.flex,
-        padding: { ...defaultFlex.padding, ...item.flex.padding },
-        margin: { ...defaultFlex.margin, ...item.flex.margin },
-        absolutePosition: { ...defaultFlex.absolutePosition, ...item.flex.absolutePosition },
-        border: { ...defaultFlex.border, ...item.flex.border },
-        size: { ...defaultFlex.size, ...item.flex.size },
-        minSize: { ...defaultFlex.minSize, ...item.flex.minSize },
-        maxSize: { ...defaultFlex.maxSize, ...item.flex.maxSize },
-    };
+        if (pixiObject.node !== undefined) {
+            pixiObject.origin?.set(item.flex.originX, item.flex.originY);
+            pixiObject.flexOptions = {
+                minFontSize: item.flex.minFontSize,
+                maxFontSize: item.flex.maxFontSize,
+            };
+
+            setFlex(pixiObject.node, {
+                ...defaultFlex,
+                ...item.flex,
+            });
+        }
+    } else {
+        if (pixiObject.node !== undefined) {
+            pixiObject.removeNode();
+        }
+    }
 }
 
 async function setTexture(pixiObject: Sprite | NineSlicePlane, texturePath: string | null) {

@@ -30,6 +30,9 @@ module.exports = {
             }),
         ],
         extensions: ['.ts', '.js', '.css'],
+        alias: {
+            'yoga-layout' : 'yoga-layout-prebuilt',
+        },
     },
     output: {
         filename: 'bundle.js',
